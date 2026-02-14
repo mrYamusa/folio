@@ -20,7 +20,7 @@ type Link struct {
 type Stat struct {
 	Value string
 	Label string
-	Trend string // e.g., "+12.4%"
+	Trend string
 }
 
 type Project struct {
@@ -52,7 +52,7 @@ func main() {
 			Name:       "DAVID YAMUSA IDRIS",
 			Role:       "BACKEND & AI ENGINEER",
 			Tagline:    "Architecting autonomous systems and scalable infrastructure that hunt latency and capture value.",
-			ResumeLink: "https://www.linkedin.com/in/david-idris-174222289/", // Or link to actual PDF if hosted
+			ResumeLink: "https://www.linkedin.com/in/david-idris-174222289/",
 			Socials: []Link{
 				{"GITHUB", "https://github.com/mrYamusa"},
 				{"LINKEDIN", "https://www.linkedin.com/in/david-idris-174222289/"},
@@ -64,11 +64,18 @@ func main() {
 				{Value: "12", Label: "ACTIVE DEPLOYS", Trend: "+3"},
 				{Value: "K8s", Label: "ORCHESTRATION", Trend: "NATIVE"},
 			},
+			// THESE ARE THE PROJECTS FROM YOUR RESUME
 			Projects: []Project{
 				{
 					Title:       "NEXTWORK RAG API",
-					Description: "Production-ready Retrieval-Augmented Generation API using FastAPI, ChromaDB, and Ollama for local LLM inference.",
-					Tags:        []string{"GO", "PYTHON", "K8S"},
+					Description: "Production-ready Document Q&A API using FastAPI, ChromaDB, and Ollama. Orchestrated with Kubernetes and Docker.",
+					Tags:        []string{"PYTHON", "K8S", "OLLAMA"},
+					Link:        "https://github.com/mrYamusa", // Update with specific repo link if available
+				},
+				{
+					Title:       "SERVERLESS AI CHAT",
+					Description: "Real-time streaming chat platform using Azure Functions and Google Gemini 2.0 for automated content moderation.",
+					Tags:        []string{"AZURE", "GEMINI", "NOSQL"},
 					Link:        "https://github.com/mrYamusa",
 				},
 				{
@@ -78,9 +85,9 @@ func main() {
 					Link:        "https://github.com/mrYamusa",
 				},
 				{
-					Title:       "SERVERLESS AI MOD",
-					Description: "Real-time streaming chat platform using Azure Functions and Google Gemini 2.0 for automated content moderation.",
-					Tags:        []string{"AZURE", "GEMINI", "NoSQL"},
+					Title:       "ULTRASOUND AI CLASSIFIER",
+					Description: "CNN model for classifying medical images using Transfer Learning (EfficientNet) and deployed via FastAPI.",
+					Tags:        []string{"TENSORFLOW", "FASTAPI", "CV"},
 					Link:        "https://github.com/mrYamusa",
 				},
 			},
@@ -89,6 +96,13 @@ func main() {
 
 		w.Header().Set("Content-Type", "text/html")
 		tmpl.ExecuteTemplate(w, "index.html", data)
+	})
+
+	// Health Check Endpoint for Load Balancers
+	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte(`{"status": "operational", "system": "yamusa-tech", "latency": "low"}`))
 	})
 
 	port := os.Getenv("PORT")
