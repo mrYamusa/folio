@@ -64,31 +64,30 @@ func main() {
 				{Value: "12", Label: "ACTIVE DEPLOYS", Trend: "+3"},
 				{Value: "K8s", Label: "ORCHESTRATION", Trend: "NATIVE"},
 			},
-			// THESE ARE THE PROJECTS FROM YOUR RESUME
 			Projects: []Project{
 				{
 					Title:       "NEXTWORK RAG API",
-					Description: "Production-ready Document Q&A API using FastAPI, ChromaDB, and Ollama. Orchestrated with Kubernetes and Docker.",
+					Description: "Production-ready Document Q&A API using FastAPI, ChromaDB, and Ollama. Orchestrated with Kubernetes.",
 					Tags:        []string{"PYTHON", "K8S", "OLLAMA"},
-					Link:        "https://github.com/mrYamusa", // Update with specific repo link if available
-				},
-				{
-					Title:       "SERVERLESS AI CHAT",
-					Description: "Real-time streaming chat platform using Azure Functions and Google Gemini 2.0 for automated content moderation.",
-					Tags:        []string{"AZURE", "GEMINI", "NOSQL"},
-					Link:        "https://github.com/mrYamusa",
+					Link:        "https://github.com/mrYamusa/nextwork-rag-api",
 				},
 				{
 					Title:       "SHIPMENT MICROSERVICE",
-					Description: "Async shipment operations handling concurrent requests with FastAPI, Redis, and PostgreSQL.",
+					Description: "High-performance Async shipment operations with FastAPI, Redis, and PostgreSQL. Live Swagger Docs available.",
 					Tags:        []string{"REDIS", "ASYNC", "POSTGRES"},
-					Link:        "https://github.com/mrYamusa",
+					Link:        "https://fastapi-shipmentservice.onrender.com/scalar#introduction",
+				},
+				{
+					Title:       "SERVERLESS AI CHAT",
+					Description: "Real-time streaming chat platform using Azure Functions and Google Gemini 2.0 for content moderation.",
+					Tags:        []string{"AZURE", "GEMINI", "NOSQL"},
+					Link:        "https://github.com/mrYamusa/nextwork-streaming-backend",
 				},
 				{
 					Title:       "ULTRASOUND AI CLASSIFIER",
-					Description: "CNN model for classifying medical images using Transfer Learning (EfficientNet) and deployed via FastAPI.",
+					Description: "CNN model for classifying medical images using Transfer Learning (EfficientNet). Hosted on HuggingFace.",
 					Tags:        []string{"TENSORFLOW", "FASTAPI", "CV"},
-					Link:        "https://github.com/mrYamusa",
+					Link:        "https://huggingface.co/mryamusa",
 				},
 			},
 			GeneratedAt: time.Now().Format("2006-01-02 15:04:05 MST"),
@@ -98,11 +97,11 @@ func main() {
 		tmpl.ExecuteTemplate(w, "index.html", data)
 	})
 
-	// Health Check Endpoint for Load Balancers
+	// Health Check for Render
 	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"status": "operational", "system": "yamusa-tech", "latency": "low"}`))
+		w.Write([]byte(`{"status": "operational", "system": "yamusa-tech"}`))
 	})
 
 	port := os.Getenv("PORT")

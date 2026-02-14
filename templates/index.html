@@ -15,9 +15,10 @@
         --surface: #0e101f;
         --text: #ffffff;
         --text-dim: #8892b0;
-        --accent: #7b61ff; /* The purple from your image */
+        --accent: #7b61ff;
         --accent-glow: rgba(123, 97, 255, 0.4);
         --green: #00ff94;
+        --border: #2a2f45;
       }
 
       * {
@@ -30,7 +31,7 @@
         background-color: var(--bg);
         color: var(--text);
         font-family: "Space Grotesk", sans-serif;
-        height: 100vh;
+        min-height: 100vh;
         display: flex;
         flex-direction: column;
         overflow-x: hidden;
@@ -81,6 +82,7 @@
         font-weight: 700;
         transition: 0.3s;
         box-shadow: 0 0 20px var(--accent-glow);
+        border: 1px solid var(--accent);
       }
       .cta-btn:hover {
         transform: translateY(-2px);
@@ -89,12 +91,12 @@
 
       /* --- HERO --- */
       main {
-        flex: 1;
         display: flex;
         flex-direction: column;
         justify-content: center;
-        padding: 0 4rem;
+        padding: 6rem 4rem; /* Added padding to separate from projects */
         position: relative;
+        min-height: 80vh;
       }
 
       .status-pill {
@@ -147,14 +149,100 @@
         background: rgba(255, 255, 255, 0.05);
       }
 
+      /* --- PROJECTS SECTION --- */
+      .projects-section {
+        padding: 4rem 4rem;
+        border-top: 1px solid var(--border);
+        background: rgba(14, 16, 31, 0.3);
+      }
+
+      .section-header {
+        margin-bottom: 3rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+      .section-header h2 {
+        font-size: 2rem;
+        text-transform: uppercase;
+      }
+      .line {
+        height: 1px;
+        background: var(--border);
+        flex: 1;
+      }
+
+      .project-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+      }
+
+      .project-card {
+        border: 1px solid var(--border);
+        background: rgba(255, 255, 255, 0.02);
+        padding: 2rem;
+        border-radius: 4px;
+        transition: 0.3s;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+      .project-card:hover {
+        border-color: var(--accent);
+        transform: translateY(-5px);
+        background: rgba(123, 97, 255, 0.05);
+      }
+
+      .project-card h3 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        color: var(--text);
+      }
+      .project-card p {
+        color: var(--text-dim);
+        margin-bottom: 1.5rem;
+        line-height: 1.5;
+        font-size: 0.95rem;
+      }
+
+      .tags {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 2rem;
+      }
+      .tag {
+        font-size: 0.75rem;
+        padding: 4px 8px;
+        border: 1px solid var(--text-dim);
+        border-radius: 2px;
+        color: var(--text-dim);
+        text-transform: uppercase;
+      }
+
+      .project-link {
+        color: var(--accent);
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+      .project-link:hover {
+        color: white;
+      }
+
       /* --- STATS BAR --- */
       .stats-bar {
-        border-top: 1px solid #222;
+        border-top: 1px solid var(--border);
         padding: 2rem 4rem;
         display: flex;
         gap: 4rem;
-        background: rgba(0, 0, 0, 0.5);
-        backdrop-filter: blur(10px);
+        background: var(--surface);
       }
 
       .stat-item h3 {
@@ -174,7 +262,6 @@
         vertical-align: middle;
       }
 
-      /* --- PROJECTS GRID (Subtle Grid Overlay) --- */
       .bg-grid {
         position: absolute;
         top: 0;
@@ -195,7 +282,8 @@
         }
         nav,
         main,
-        .stats-bar {
+        .stats-bar,
+        .projects-section {
           padding: 1.5rem;
         }
         .stats-bar {
@@ -242,11 +330,7 @@
         <span>DRIVE PERFORMANCE</span>
       </h1>
 
-      <p class="subtext">
-        {{ .Tagline }} <br />
-        Specializing in high-concurrency Go services, Python AI integration, and
-        Kubernetes orchestration.
-      </p>
+      <p class="subtext">{{ .Tagline }}</p>
 
       <div class="action-row">
         <a href="https://github.com/mrYamusa" class="cta-btn"
@@ -255,6 +339,32 @@
         <a href="#projects" class="secondary-btn">VIEW PROTOCOLS</a>
       </div>
     </main>
+
+    <div id="projects" class="projects-section">
+      <div class="section-header">
+        <h2>// Active Protocols</h2>
+        <div class="line"></div>
+      </div>
+
+      <div class="project-grid">
+        {{ range .Projects }}
+        <div class="project-card">
+          <div>
+            <h3>{{ .Title }}</h3>
+            <p>{{ .Description }}</p>
+            <div class="tags">
+              {{ range .Tags }}
+              <span class="tag">{{ . }}</span>
+              {{ end }}
+            </div>
+          </div>
+          <a href="{{ .Link }}" class="project-link" target="_blank"
+            >ACCESS TERMINAL -></a
+          >
+        </div>
+        {{ end }}
+      </div>
+    </div>
 
     <div class="stats-bar">
       {{ range .Stats }}
