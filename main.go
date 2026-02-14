@@ -12,6 +12,7 @@ import (
 //go:embed templates/*
 var content embed.FS
 
+// --- STRUCTS ---
 type Link struct {
 	Label string
 	URL   string
@@ -30,6 +31,7 @@ type Project struct {
 	Link        string
 }
 
+// Data for Home Page
 type PageData struct {
 	Name        string
 	Role        string
@@ -41,18 +43,38 @@ type PageData struct {
 	GeneratedAt string
 }
 
+// Data for Resume Page
+type ExperienceItem struct {
+	Title    string
+	Company  string
+	Duration string
+	Points   []string
+}
+
+type ResumeData struct {
+	Skills     []string
+	Experience []ExperienceItem
+}
+
 func main() {
+	// Parse all templates
 	tmpl, err := template.ParseFS(content, "templates/*.html")
 	if err != nil {
 		log.Fatalf("Error parsing templates: %v", err)
 	}
 
+	// 1. HOME PAGE HANDLER
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/" {
+			http.NotFound(w, r)
+			return
+		}
+
 		data := PageData{
 			Name:       "DAVID YAMUSA IDRIS",
 			Role:       "BACKEND & AI ENGINEER",
 			Tagline:    "Architecting autonomous systems and scalable infrastructure that hunt latency and capture value.",
-			ResumeLink: "https://www.linkedin.com/in/david-idris-174222289/",
+			ResumeLink: "https://www.linkedin.com/in/david-idris-174222289/", // DIRECT LINKEDIN LINK
 			Socials: []Link{
 				{"GITHUB", "https://github.com/mrYamusa"},
 				{"LINKEDIN", "https://www.linkedin.com/in/david-idris-174222289/"},
@@ -61,7 +83,7 @@ func main() {
 			Stats: []Stat{
 				{Value: "4+", Label: "YEARS EXP", Trend: "LEVEL UP"},
 				{Value: "99.9%", Label: "UPTIME", Trend: "STABLE"},
-				{Value: "12", Label: "ACTIVE DEPLOYS", Trend: "+3"},
+				{Value: "8", Label: "ACTIVE DEPLOYS", Trend: "+3"},
 				{Value: "K8s", Label: "ORCHESTRATION", Trend: "NATIVE"},
 			},
 			Projects: []Project{
@@ -97,7 +119,38 @@ func main() {
 		tmpl.ExecuteTemplate(w, "index.html", data)
 	})
 
-	// Health Check for Render
+	// 2. RESUME PAGE HANDLER (/resume)
+	http.HandleFunc("/resume", func(w http.ResponseWriter, r *http.Request) {
+		data := ResumeData{
+			Skills: []string{"Python", "Go", "FastAPI", "Django", "Docker", "Kubernetes", "Azure", "PostgreSQL", "Redis", "TensorFlow", "Git/Linux"},
+			Experience: []ExperienceItem{
+				{
+					Title:    "Backend Developer",
+					Company:  "NACS Landmark University",
+					Duration: "10/2024 - 09/2025",
+					Points: []string{
+						"Architected secure REST API backend for a voting system using Django/DRF.",
+						"Designed user authentication, MySQL integration, and cloud storage for media.",
+						"Deployed and managed the application on Render with CI/CD integration.",
+					},
+				},
+				{
+					Title:    "Software Engineer Intern",
+					Company:  "NCAIR Nigeria",
+					Duration: "03/2024 - 09/2024",
+					Points: []string{
+						"Developed and maintained Python-based applications in a Linux environment.",
+						"Collaborated with the development team to enhance AI model integration.",
+						"Utilized Git for version control and CI/CD pipelines.",
+					},
+				},
+			},
+		}
+		w.Header().Set("Content-Type", "text/html")
+		tmpl.ExecuteTemplate(w, "resume.html", data)
+	})
+
+	// Health Check
 	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
