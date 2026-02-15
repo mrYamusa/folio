@@ -81,9 +81,9 @@ func main() {
 				{"TWITTER", "https://x.com/mr_yamusa"},
 			},
 			Stats: []Stat{
-				{Value: "4+", Label: "YEARS EXP", Trend: "LEVEL UP"},
+				{Value: "2+", Label: "YEARS EXP", Trend: "LEVEL UP"},
 				{Value: "99.9%", Label: "UPTIME", Trend: "STABLE"},
-				{Value: "8", Label: "ACTIVE DEPLOYS", Trend: "+3"},
+				{Value: "5", Label: "ACTIVE DEPLOYS", Trend: "+3"},
 				{Value: "K8s", Label: "ORCHESTRATION", Trend: "NATIVE"},
 			},
 			Projects: []Project{
@@ -122,11 +122,11 @@ func main() {
 	// 2. RESUME PAGE HANDLER (/resume)
 	http.HandleFunc("/resume", func(w http.ResponseWriter, r *http.Request) {
 		data := ResumeData{
-			Skills: []string{"Python", "Go", "FastAPI", "Django", "Docker", "Kubernetes", "Azure", "PostgreSQL", "Redis", "TensorFlow", "Git/Linux"},
+			Skills: []string{"Python", "Go", "FastAPI", "Django", "Docker", "Kubernetes", "Azure", "PostgreSQL", "Redis", "TensorFlow", "Git/Linux", "Ollama"},
 			Experience: []ExperienceItem{
 				{
 					Title:    "Backend Developer",
-					Company:  "NACS Landmark University",
+					Company:  "NACOS Landmark University",
 					Duration: "10/2024 - 09/2025",
 					Points: []string{
 						"Architected secure REST API backend for a voting system using Django/DRF.",
