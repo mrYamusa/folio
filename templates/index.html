@@ -3,29 +3,41 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>YAMUSA.TECH // SYSTEM ONLINE</title>
+    <title>mr.yamusa — Backend & AI Engineer</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
-      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap"
       rel="stylesheet"
     />
     <style>
       :root {
         --bg: #03040b;
-        --surface: #0e101f;
-        --text: #ffffff;
-        --text-dim: #8892b0;
+        --surface: #0a0c1a;
+        --surface-2: #10122a;
+        --surface-3: #161836;
+        --text: #f0f0f0;
+        --text-dim: #6b7394;
         --accent: #7b61ff;
+        --accent-soft: rgba(123, 97, 255, 0.15);
         --accent-glow: rgba(123, 97, 255, 0.4);
         --green: #00ff94;
-        --border: #2a2f45;
+        --green-soft: rgba(0, 255, 148, 0.08);
+        --orange: #ff8a3d;
+        --orange-soft: rgba(255, 138, 61, 0.1);
+        --cyan: #22d3ee;
+        --cyan-soft: rgba(34, 211, 238, 0.1);
+        --red: #ff5f57;
+        --yellow: #ffbd2e;
+        --border: rgba(255, 255, 255, 0.06);
+        --border-accent: rgba(123, 97, 255, 0.2);
+        --glass: rgba(255, 255, 255, 0.03);
+        --radius: 12px;
+        --radius-sm: 6px;
+        --radius-lg: 16px;
       }
 
-      * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-      }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      html { scroll-behavior: smooth; }
 
       body {
         background-color: var(--bg);
@@ -37,316 +49,1604 @@
         overflow-x: hidden;
       }
 
+      /* --- NOISE --- */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+        pointer-events: none;
+        z-index: 9999;
+        opacity: 0.4;
+      }
+
+      /* --- ANIMATED ORBS --- */
+      .orb {
+        position: fixed;
+        width: 600px;
+        height: 600px;
+        border-radius: 50%;
+        filter: blur(80px);
+        pointer-events: none;
+        z-index: 0;
+        animation: orb-float 20s ease-in-out infinite;
+      }
+      .orb-1 { top: -200px; right: -100px; background: radial-gradient(circle, rgba(123,97,255,0.12) 0%, transparent 70%); }
+      .orb-2 { bottom: -300px; left: -200px; background: radial-gradient(circle, rgba(0,255,148,0.08) 0%, transparent 70%); animation-delay: -10s; }
+      .orb-3 { top: 50%; left: 50%; transform: translate(-50%, -50%); width: 800px; height: 800px; background: radial-gradient(circle, rgba(255,138,61,0.06) 0%, transparent 70%); animation-delay: -5s; }
+
+      @keyframes orb-float {
+        0%, 100% { transform: translate(0, 0) scale(1); }
+        33% { transform: translate(30px, -50px) scale(1.05); }
+        66% { transform: translate(-20px, 30px) scale(0.95); }
+      }
+
+      .bg-grid {
+        position: fixed;
+        inset: 0;
+        background-image:
+          linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
+        background-size: 60px 60px;
+        pointer-events: none;
+        z-index: 0;
+      }
+
       /* --- NAV --- */
       nav {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 2rem 4rem;
+        padding: 1.5rem 4rem;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: rgba(3, 4, 11, 0.8);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-bottom: 1px solid var(--border);
       }
       .brand {
         font-weight: 700;
         letter-spacing: -1px;
-        font-size: 1.2rem;
+        font-size: 1.1rem;
         display: flex;
         align-items: center;
         gap: 10px;
       }
-      .brand span {
-        background: var(--accent);
-        width: 10px;
-        height: 10px;
+      .brand-dot {
+        width: 8px;
+        height: 8px;
         border-radius: 50%;
-        box-shadow: 0 0 10px var(--accent);
+        background: var(--green);
+        box-shadow: 0 0 12px var(--green);
+        animation: pulse-dot 2s ease-in-out infinite;
+      }
+      @keyframes pulse-dot {
+        0%, 100% { opacity: 1; box-shadow: 0 0 12px var(--green); }
+        50% { opacity: 0.5; box-shadow: 0 0 4px var(--green); }
       }
 
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 0;
+      }
       .nav-links a {
         color: var(--text-dim);
         text-decoration: none;
-        margin-left: 2rem;
-        font-size: 0.9rem;
+        padding: 0.5rem 1.2rem;
+        font-size: 0.8rem;
         text-transform: uppercase;
-        letter-spacing: 1px;
-        transition: 0.3s;
+        letter-spacing: 1.5px;
+        transition: all 0.3s;
+        border-radius: var(--radius-sm);
       }
       .nav-links a:hover {
         color: var(--text);
+        background: var(--glass);
       }
 
       .cta-btn {
         background: var(--accent);
         color: white;
-        padding: 0.8rem 1.5rem;
+        padding: 0.7rem 1.4rem;
         text-decoration: none;
-        border-radius: 4px;
-        font-weight: 700;
-        transition: 0.3s;
+        border-radius: var(--radius-sm);
+        font-weight: 600;
+        font-size: 0.85rem;
+        transition: all 0.3s;
         box-shadow: 0 0 20px var(--accent-glow);
-        border: 1px solid var(--accent);
+        border: 1px solid transparent;
+        letter-spacing: 0.5px;
       }
       .cta-btn:hover {
         transform: translateY(-2px);
-        box-shadow: 0 0 30px var(--accent-glow);
+        box-shadow: 0 4px 30px var(--accent-glow);
       }
 
       /* --- HERO --- */
-      main {
+      .hero {
         display: flex;
         flex-direction: column;
         justify-content: center;
-        padding: 6rem 4rem;
+        padding: 8rem 4rem 6rem;
         position: relative;
-        min-height: 80vh;
+        min-height: 85vh;
+        z-index: 1;
       }
 
       .status-pill {
-        border: 1px solid var(--text-dim);
-        display: inline-block;
-        padding: 0.5rem 1rem;
+        border: 1px solid rgba(0, 255, 148, 0.2);
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 0.45rem 1rem;
         border-radius: 50px;
-        font-size: 0.8rem;
-        margin-bottom: 2rem;
+        font-size: 0.75rem;
+        margin-bottom: 2.5rem;
         color: var(--green);
-        background: rgba(0, 255, 148, 0.05);
+        background: var(--green-soft);
         width: fit-content;
+        letter-spacing: 1px;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .status-pill::before {
+        content: "";
+        width: 6px;
+        height: 6px;
+        background: var(--green);
+        border-radius: 50%;
+        animation: pulse-dot 2s ease-in-out infinite;
       }
 
       h1 {
-        font-size: 5rem;
-        line-height: 0.9;
+        font-size: clamp(3rem, 7vw, 5.5rem);
+        line-height: 0.95;
         text-transform: uppercase;
         max-width: 900px;
         margin-bottom: 2rem;
+        font-weight: 700;
+        letter-spacing: -2px;
       }
-
-      h1 span {
-        color: var(--accent);
+      h1 .highlight {
+        background: linear-gradient(135deg, var(--accent) 0%, var(--cyan) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
       }
 
       .subtext {
         color: var(--text-dim);
-        font-size: 1.2rem;
-        max-width: 600px;
-        line-height: 1.6;
+        font-size: 1.15rem;
+        max-width: 550px;
+        line-height: 1.7;
         margin-bottom: 3rem;
       }
 
       .action-row {
         display: flex;
-        gap: 20px;
+        gap: 16px;
+        flex-wrap: wrap;
       }
 
       .secondary-btn {
-        border: 1px solid var(--text-dim);
+        border: 1px solid rgba(255,255,255,0.12);
         color: var(--text);
-        padding: 0.8rem 2rem;
+        padding: 0.7rem 1.8rem;
         text-decoration: none;
-        border-radius: 4px;
-        transition: 0.3s;
+        border-radius: var(--radius-sm);
+        transition: all 0.3s;
+        font-size: 0.85rem;
+        font-weight: 500;
+        backdrop-filter: blur(10px);
       }
       .secondary-btn:hover {
-        border-color: var(--text);
-        background: rgba(255, 255, 255, 0.05);
+        border-color: var(--accent);
+        background: var(--accent-soft);
+        transform: translateY(-1px);
       }
 
-      /* --- PROJECTS SECTION --- */
-      .projects-section {
-        padding: 4rem 4rem;
+      /* --- SECTION COMMONS --- */
+      .section {
+        padding: 5rem 4rem;
         border-top: 1px solid var(--border);
-        background: rgba(14, 16, 31, 0.3);
+        position: relative;
+        z-index: 1;
       }
 
       .section-header {
         margin-bottom: 3rem;
         display: flex;
         align-items: center;
-        gap: 1rem;
+        gap: 1.2rem;
       }
       .section-header h2 {
-        font-size: 2rem;
+        font-size: 1.1rem;
         text-transform: uppercase;
+        letter-spacing: 3px;
+        color: var(--text-dim);
+        font-weight: 500;
+        white-space: nowrap;
+      }
+      .section-header h2 span {
+        color: var(--accent);
+        margin-right: 8px;
+        font-family: "JetBrains Mono", monospace;
       }
       .line {
         height: 1px;
-        background: var(--border);
+        background: linear-gradient(90deg, var(--border-accent), transparent);
         flex: 1;
       }
 
+      /* --- PROJECTS SECTION --- */
       .project-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 2rem;
+        gap: 1.5rem;
       }
 
       .project-card {
         border: 1px solid var(--border);
-        background: rgba(255, 255, 255, 0.02);
+        background: var(--glass);
         padding: 2rem;
-        border-radius: 4px;
-        transition: 0.3s;
+        border-radius: var(--radius);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         display: flex;
         flex-direction: column;
         justify-content: space-between;
+        backdrop-filter: blur(10px);
+        position: relative;
+        overflow: hidden;
       }
+      .project-card::before {
+        content: "";
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%; height: 2px;
+        background: linear-gradient(90deg, transparent, var(--accent), transparent);
+        opacity: 0;
+        transition: opacity 0.4s;
+      }
+      .project-card:hover::before { opacity: 1; }
       .project-card:hover {
-        border-color: var(--accent);
-        transform: translateY(-5px);
-        background: rgba(123, 97, 255, 0.05);
+        border-color: var(--border-accent);
+        transform: translateY(-4px);
+        background: rgba(123, 97, 255, 0.04);
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3), 0 0 40px rgba(123,97,255,0.06);
       }
 
       .project-card h3 {
-        font-size: 1.5rem;
-        margin-bottom: 1rem;
+        font-size: 1.3rem;
+        margin-bottom: 0.75rem;
         color: var(--text);
+        letter-spacing: -0.5px;
       }
       .project-card p {
         color: var(--text-dim);
         margin-bottom: 1.5rem;
-        line-height: 1.5;
-        font-size: 0.95rem;
+        line-height: 1.6;
+        font-size: 0.9rem;
       }
 
-      .tags {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-        margin-bottom: 2rem;
-      }
+      .tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1.5rem; }
       .tag {
-        font-size: 0.75rem;
-        padding: 4px 8px;
-        border: 1px solid var(--text-dim);
-        border-radius: 2px;
-        color: var(--text-dim);
+        font-size: 0.7rem;
+        padding: 3px 10px;
+        border: 1px solid rgba(123, 97, 255, 0.25);
+        border-radius: 50px;
+        color: var(--accent);
+        background: var(--accent-soft);
         text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-family: "JetBrains Mono", monospace;
       }
 
       .project-link {
         color: var(--accent);
         text-decoration: none;
+        font-weight: 600;
+        font-size: 0.85rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s;
+      }
+      .project-link:hover { color: white; gap: 10px; }
+      .project-link svg { width: 14px; height: 14px; transition: transform 0.3s; }
+      .project-link:hover svg { transform: translateX(3px); }
+
+      /* ============================================================
+         CURRENTLY BUILDING — FULL SECTION
+         ============================================================ */
+      .building-section {
+        background: linear-gradient(180deg, var(--surface) 0%, var(--bg) 100%);
+        padding-bottom: 6rem;
+      }
+
+      /* --- Hero Split --- */
+      .building-hero {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 3rem;
+        margin-bottom: 4rem;
+      }
+
+      .building-info {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+
+      .building-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--orange-soft);
+        border: 1px solid rgba(255, 138, 61, 0.25);
+        color: var(--orange);
+        padding: 0.4rem 1rem;
+        border-radius: 50px;
+        font-size: 0.7rem;
+        font-family: "JetBrains Mono", monospace;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        width: fit-content;
+      }
+      .building-badge::before {
+        content: "";
+        width: 6px;
+        height: 6px;
+        background: var(--orange);
+        border-radius: 50%;
+        animation: pulse-dot 1.5s ease-in-out infinite;
+      }
+
+      .building-title {
+        font-size: 3rem;
         font-weight: 700;
+        letter-spacing: -2px;
+        line-height: 1;
+      }
+      .building-title span {
+        background: linear-gradient(135deg, var(--orange) 0%, #ff6b6b 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .building-tagline {
+        color: var(--text-dim);
+        font-size: 1.05rem;
+        line-height: 1.7;
+      }
+
+      .building-actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .btn-orange {
+        background: linear-gradient(135deg, var(--orange), #ff6b6b);
+        color: white;
+        padding: 0.65rem 1.4rem;
+        text-decoration: none;
+        border-radius: var(--radius-sm);
+        font-weight: 600;
+        font-size: 0.85rem;
+        transition: all 0.3s;
+        box-shadow: 0 4px 20px rgba(255, 138, 61, 0.3);
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .btn-orange:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 30px rgba(255, 138, 61, 0.4);
+      }
+
+      .btn-docs {
+        background: var(--cyan-soft);
+        border: 1px solid rgba(34, 211, 238, 0.25);
+        color: var(--cyan);
+        padding: 0.65rem 1.4rem;
+        text-decoration: none;
+        border-radius: var(--radius-sm);
+        font-weight: 600;
+        font-size: 0.85rem;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .btn-docs:hover {
+        background: rgba(34, 211, 238, 0.2);
+        transform: translateY(-1px);
+      }
+
+      /* --- Architecture Diagram --- */
+      .arch-visual {
+        background: var(--glass);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        position: relative;
+        overflow: hidden;
+      }
+      .arch-visual::before {
+        content: "SYSTEM ARCHITECTURE";
+        position: absolute;
+        top: 12px;
+        right: 16px;
+        font-size: 0.6rem;
+        color: var(--text-dim);
+        letter-spacing: 2px;
+        font-family: "JetBrains Mono", monospace;
+      }
+
+      .arch-node {
+        display: flex;
+        align-items: flex-start;
+        gap: 14px;
+        padding: 1rem 0;
+        border-bottom: 1px solid var(--border);
+        transition: all 0.3s;
+      }
+      .arch-node:last-child { border-bottom: none; }
+      .arch-node:hover { background: rgba(255,255,255,0.02); padding-left: 8px; }
+
+      .arch-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        margin-top: 5px;
+        flex-shrink: 0;
+      }
+      .arch-node:nth-child(1) .arch-dot { background: var(--accent); box-shadow: 0 0 8px var(--accent-glow); }
+      .arch-node:nth-child(2) .arch-dot { background: var(--cyan); box-shadow: 0 0 8px rgba(34,211,238,0.4); }
+      .arch-node:nth-child(3) .arch-dot { background: var(--green); box-shadow: 0 0 8px rgba(0,255,148,0.4); }
+      .arch-node:nth-child(4) .arch-dot { background: var(--orange); box-shadow: 0 0 8px rgba(255,138,61,0.4); }
+      .arch-node:nth-child(5) .arch-dot { background: #ff6b6b; box-shadow: 0 0 8px rgba(255,107,107,0.4); }
+
+      .arch-label { font-weight: 600; font-size: 0.85rem; letter-spacing: 0.5px; margin-bottom: 2px; }
+      .arch-desc { color: var(--text-dim); font-size: 0.78rem; line-height: 1.5; }
+
+      /* --- Tech Stack --- */
+      .tech-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 3rem;
+      }
+      .tech-pill {
+        font-size: 0.72rem;
+        padding: 5px 14px;
+        border-radius: 50px;
+        font-family: "JetBrains Mono", monospace;
+        letter-spacing: 0.5px;
+        border: 1px solid var(--border);
+        color: var(--text-dim);
+        background: var(--glass);
+        transition: all 0.3s;
+      }
+      .tech-pill:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+        background: var(--accent-soft);
+      }
+
+      /* --- Endpoints Table --- */
+      .endpoints-card {
+        background: var(--glass);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+        margin-bottom: 3rem;
+      }
+
+      .window-header {
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: rgba(255,255,255,0.02);
+      }
+      .window-dots {
+        display: flex;
+        gap: 6px;
+      }
+      .window-dots span {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      .window-dots span:nth-child(1) { background: var(--red); }
+      .window-dots span:nth-child(2) { background: var(--yellow); }
+      .window-dots span:nth-child(3) { background: var(--green); }
+      .window-title {
+        font-size: 0.8rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--text-dim);
+        font-weight: 500;
+        font-family: "JetBrains Mono", monospace;
+      }
+
+      .endpoint-row {
+        display: grid;
+        grid-template-columns: 70px 200px 1fr;
+        padding: 0.75rem 1.5rem;
+        border-bottom: 1px solid var(--border);
+        transition: background 0.2s;
+        font-size: 0.85rem;
+        align-items: center;
+      }
+      .endpoint-row:last-child { border-bottom: none; }
+      .endpoint-row:hover { background: rgba(255,255,255,0.02); }
+
+      .method {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        padding: 2px 8px;
+        border-radius: 3px;
+        text-align: center;
+        width: fit-content;
+      }
+      .method-get  { color: var(--green);  background: var(--green-soft);  border: 1px solid rgba(0,255,148,0.15); }
+      .method-post { color: var(--accent); background: var(--accent-soft); border: 1px solid rgba(123,97,255,0.15); }
+
+      .endpoint-path { font-family: "JetBrains Mono", monospace; font-size: 0.82rem; color: var(--text); }
+      .endpoint-desc { color: var(--text-dim); font-size: 0.82rem; }
+
+      /* --- Docs Banner --- */
+      .docs-banner {
+        background: linear-gradient(135deg, rgba(34,211,238,0.08) 0%, rgba(123,97,255,0.08) 100%);
+        border: 1px solid rgba(34,211,238,0.15);
+        border-radius: var(--radius);
+        padding: 1.5rem 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 2rem;
+        margin-bottom: 3rem;
+        flex-wrap: wrap;
+      }
+      .docs-banner-text {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .docs-banner-text h3 {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--text);
+        letter-spacing: -0.3px;
+      }
+      .docs-banner-text p {
+        font-size: 0.82rem;
+        color: var(--text-dim);
+        line-height: 1.5;
+      }
+      .docs-banner-links {
+        display: flex;
+        gap: 10px;
+        flex-shrink: 0;
+      }
+
+      /* ============================================================
+         TUTORIAL — TABBED SPLIT-PANEL
+         ============================================================ */
+      .tutorial-container {
+        margin-bottom: 3rem;
+      }
+
+      /* Tab strip */
+      .tutorial-tabs {
+        display: flex;
+        gap: 0;
+        border-bottom: 1px solid var(--border);
+        overflow-x: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+      }
+      .tutorial-tabs::-webkit-scrollbar { display: none; }
+
+      .tutorial-tab {
+        background: none;
+        border: none;
+        color: var(--text-dim);
+        padding: 0.8rem 1.5rem;
+        font-size: 0.78rem;
+        font-family: "JetBrains Mono", monospace;
+        letter-spacing: 0.5px;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: all 0.3s;
+        border-bottom: 2px solid transparent;
+        position: relative;
+      }
+      .tutorial-tab:hover { color: var(--text); background: rgba(255,255,255,0.02); }
+      .tutorial-tab.active {
+        color: var(--orange);
+        border-bottom-color: var(--orange);
+        background: var(--orange-soft);
+      }
+      .tutorial-tab .tab-lang {
+        font-size: 0.6rem;
+        padding: 1px 6px;
+        border-radius: 3px;
+        margin-left: 6px;
+        vertical-align: middle;
+      }
+      .lang-bash { background: var(--green-soft); color: var(--green); }
+      .lang-python { background: var(--cyan-soft); color: var(--cyan); }
+
+      /* Panel */
+      .tutorial-panel {
+        display: none;
+        border: 1px solid var(--border);
+        border-top: none;
+        border-radius: 0 0 var(--radius) var(--radius);
+        overflow: hidden;
+        background: var(--glass);
+      }
+      .tutorial-panel.active { display: block; }
+
+      .panel-description {
+        padding: 1rem 1.5rem;
+        background: rgba(255,255,255,0.02);
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .panel-description h4 {
         font-size: 0.9rem;
+        font-weight: 600;
+      }
+      .panel-step-badge {
+        font-size: 0.6rem;
+        color: var(--orange);
+        font-family: "JetBrains Mono", monospace;
+        letter-spacing: 1px;
+        background: var(--orange-soft);
+        padding: 2px 10px;
+        border-radius: 50px;
+        border: 1px solid rgba(255,138,61,0.2);
+      }
+
+      /* Split view: request | response */
+      .panel-split {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .panel-col {
+        display: flex;
+        flex-direction: column;
+      }
+      .panel-col + .panel-col { border-left: 1px solid var(--border); }
+
+      .panel-col-header {
+        padding: 0.6rem 1.2rem;
+        border-bottom: 1px solid var(--border);
+        font-size: 0.65rem;
+        font-family: "JetBrains Mono", monospace;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .panel-col-header.req-header { color: var(--green); background: rgba(0,255,148,0.03); }
+      .panel-col-header.res-header { color: var(--cyan); background: rgba(34,211,238,0.03); }
+
+      .panel-code {
+        padding: 1.2rem 1.5rem;
+        overflow-x: auto;
+        flex: 1;
+        background: rgba(0,0,0,0.2);
+        min-height: 120px;
+      }
+      .panel-code pre {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.76rem;
+        line-height: 1.7;
+        white-space: pre-wrap;
+        word-break: break-all;
+      }
+      .panel-code.req-code pre { color: var(--green); }
+      .panel-code.res-code pre { color: var(--cyan); }
+
+      .panel-note {
+        padding: 0.8rem 1.2rem;
+        color: var(--text-dim);
+        font-size: 0.78rem;
+        line-height: 1.6;
+        border-top: 1px solid var(--border);
+        background: rgba(255,255,255,0.01);
+      }
+
+      .copy-btn {
+        background: var(--glass);
+        border: 1px solid var(--border);
+        color: var(--text-dim);
+        padding: 3px 10px;
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.6rem;
+        transition: all 0.3s;
+      }
+      .copy-btn:hover {
+        color: var(--accent);
+        border-color: var(--accent);
+      }
+
+      /* ============================================================
+         RESPONSE SCHEMA TABLE
+         ============================================================ */
+      .schema-table-wrap {
+        margin-bottom: 3rem;
+      }
+
+      .schema-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.82rem;
+      }
+      .schema-table th {
+        text-align: left;
+        padding: 0.7rem 1.2rem;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.7rem;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        color: var(--text-dim);
+        background: rgba(255,255,255,0.02);
+        border-bottom: 1px solid var(--border);
+      }
+      .schema-table td {
+        padding: 0.65rem 1.2rem;
+        border-bottom: 1px solid var(--border);
+        vertical-align: top;
+      }
+      .schema-table tr:last-child td { border-bottom: none; }
+      .schema-table tr:hover td { background: rgba(255,255,255,0.015); }
+
+      .field-name {
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 600;
+        color: var(--orange);
+        font-size: 0.8rem;
+      }
+      .field-type {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.72rem;
+        padding: 2px 8px;
+        border-radius: 3px;
+        background: var(--accent-soft);
+        color: var(--accent);
+        border: 1px solid rgba(123,97,255,0.15);
+      }
+      .field-desc { color: var(--text-dim); line-height: 1.5; }
+
+      /* ============================================================
+         UML SYSTEM FLOW DIAGRAM
+         ============================================================ */
+      .uml-wrap {
+        margin-bottom: 3rem;
+      }
+      .uml-card {
+        background: var(--glass);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+        position: relative;
+      }
+      .uml-header {
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: rgba(255,255,255,0.02);
+      }
+      .uml-header-title {
+        font-size: 0.8rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--text-dim);
+        font-weight: 500;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .uml-legend {
+        margin-left: auto;
+        display: flex;
+        gap: 14px;
+        font-size: 0.6rem;
+        font-family: "JetBrains Mono", monospace;
+        color: var(--text-dim);
+      }
+      .uml-legend-item {
         display: flex;
         align-items: center;
         gap: 5px;
-        text-transform: uppercase;
-        letter-spacing: 1px;
       }
-      .project-link:hover {
-        color: white;
+      .uml-legend-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 2px;
+      }
+
+      .uml-body {
+        padding: 2.5rem 2rem;
+        position: relative;
+        overflow-x: auto;
+      }
+
+      /* SVG connections drawn with CSS */
+      .uml-grid {
+        display: grid;
+        grid-template-columns: 1fr 80px 1fr 80px 1fr;
+        grid-template-rows: auto 60px auto 60px auto;
+        align-items: center;
+        justify-items: center;
+        min-width: 700px;
+        gap: 0;
+      }
+
+      .uml-node {
+        padding: 0.8rem 1.2rem;
+        border-radius: var(--radius-sm);
+        text-align: center;
+        position: relative;
+        min-width: 140px;
+        transition: all 0.3s;
+      }
+      .uml-node:hover {
+        transform: scale(1.04);
+      }
+      .uml-node-label {
+        font-weight: 600;
+        font-size: 0.78rem;
+        letter-spacing: 0.5px;
+        margin-bottom: 3px;
+      }
+      .uml-node-sub {
+        font-size: 0.62rem;
+        color: var(--text-dim);
+        font-family: "JetBrains Mono", monospace;
+        line-height: 1.4;
+      }
+
+      /* Node variants */
+      .uml-client {
+        background: rgba(123,97,255,0.12);
+        border: 1.5px solid rgba(123,97,255,0.4);
+      }
+      .uml-client .uml-node-label { color: var(--accent); }
+
+      .uml-api {
+        background: rgba(255,138,61,0.1);
+        border: 1.5px solid rgba(255,138,61,0.35);
+      }
+      .uml-api .uml-node-label { color: var(--orange); }
+
+      .uml-ml {
+        background: rgba(34,211,238,0.1);
+        border: 1.5px solid rgba(34,211,238,0.3);
+      }
+      .uml-ml .uml-node-label { color: var(--cyan); }
+
+      .uml-db {
+        background: rgba(0,255,148,0.08);
+        border: 1.5px solid rgba(0,255,148,0.3);
+        border-radius: 8px 8px 20px 20px;
+      }
+      .uml-db .uml-node-label { color: var(--green); }
+
+      .uml-ext {
+        background: rgba(255,95,87,0.08);
+        border: 1.5px dashed rgba(255,95,87,0.3);
+      }
+      .uml-ext .uml-node-label { color: var(--red); }
+
+      /* Connectors */
+      .uml-conn {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+        position: relative;
+      }
+      .uml-conn-h {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+      }
+      .uml-conn-h::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 1.5px;
+        background: var(--border);
+      }
+      .uml-conn-h .uml-arrow {
+        position: absolute;
+        right: -2px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-dim);
+        font-size: 0.6rem;
+      }
+
+      .uml-conn-v {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+      }
+      .uml-conn-v::before {
+        content: "";
+        position: absolute;
+        left: 50%;
+        top: 0;
+        bottom: 0;
+        width: 1.5px;
+        background: var(--border);
+      }
+      .uml-conn-v .uml-arrow {
+        position: absolute;
+        bottom: -2px;
+        left: 50%;
+        transform: translateX(-50%);
+        color: var(--text-dim);
+        font-size: 0.6rem;
+      }
+
+      .uml-conn-label {
+        background: var(--bg);
+        padding: 1px 8px;
+        font-size: 0.55rem;
+        font-family: "JetBrains Mono", monospace;
+        color: var(--text-dim);
+        letter-spacing: 0.5px;
+        z-index: 1;
+        white-space: nowrap;
+        border-radius: 3px;
+        border: 1px solid var(--border);
+      }
+      .uml-conn-label.label-green { color: var(--green); border-color: rgba(0,255,148,0.2); }
+      .uml-conn-label.label-orange { color: var(--orange); border-color: rgba(255,138,61,0.2); }
+      .uml-conn-label.label-cyan { color: var(--cyan); border-color: rgba(34,211,238,0.2); }
+      .uml-conn-label.label-accent { color: var(--accent); border-color: rgba(123,97,255,0.2); }
+
+      /* Empty cell */
+      .uml-empty { width: 100%; height: 100%; }
+
+      /* ---- UML ANIMATION ---- */
+      /* Active node glow */
+      .uml-node.uml-anim-active {
+        transition: all 0.5s ease;
+      }
+      .uml-node.uml-client.uml-anim-active {
+        box-shadow: 0 0 20px rgba(123,97,255,0.35), inset 0 0 15px rgba(123,97,255,0.1);
+        border-color: rgba(123,97,255,0.7);
+      }
+      .uml-node.uml-api.uml-anim-active {
+        box-shadow: 0 0 20px rgba(255,138,61,0.35), inset 0 0 15px rgba(255,138,61,0.1);
+        border-color: rgba(255,138,61,0.7);
+      }
+      .uml-node.uml-ml.uml-anim-active {
+        box-shadow: 0 0 20px rgba(34,211,238,0.35), inset 0 0 15px rgba(34,211,238,0.1);
+        border-color: rgba(34,211,238,0.7);
+      }
+      .uml-node.uml-db.uml-anim-active {
+        box-shadow: 0 0 20px rgba(0,255,148,0.35), inset 0 0 15px rgba(0,255,148,0.1);
+        border-color: rgba(0,255,148,0.7);
+      }
+      .uml-node.uml-ext.uml-anim-active {
+        box-shadow: 0 0 20px rgba(255,95,87,0.35), inset 0 0 15px rgba(255,95,87,0.1);
+        border-color: rgba(255,95,87,0.7);
+      }
+
+      /* Horizontal data packet */
+      .uml-conn-h .uml-packet {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 20px;
+        height: 3px;
+        border-radius: 3px;
+        opacity: 0;
+        z-index: 2;
+      }
+      .uml-packet.packet-right {
+        animation: uml-packet-right 0.8s ease-in-out forwards;
+      }
+      .uml-packet.packet-left {
+        animation: uml-packet-left 0.8s ease-in-out forwards;
+      }
+      .uml-packet.pkt-accent  { background: linear-gradient(90deg, transparent, var(--accent), var(--accent), transparent); }
+      .uml-packet.pkt-green   { background: linear-gradient(90deg, transparent, var(--green), var(--green), transparent); }
+      .uml-packet.pkt-orange  { background: linear-gradient(90deg, transparent, var(--orange), var(--orange), transparent); }
+      .uml-packet.pkt-cyan    { background: linear-gradient(90deg, transparent, var(--cyan), var(--cyan), transparent); }
+
+      @keyframes uml-packet-right {
+        0%   { left: -20px; opacity: 0; }
+        15%  { opacity: 1; }
+        85%  { opacity: 1; }
+        100% { left: calc(100% + 5px); opacity: 0; }
+      }
+      @keyframes uml-packet-left {
+        0%   { right: -20px; left: auto; opacity: 0; }
+        15%  { opacity: 1; }
+        85%  { opacity: 1; }
+        100% { right: calc(100% + 5px); left: auto; opacity: 0; }
+      }
+
+      /* Vertical data packet */
+      .uml-conn-v .uml-packet-v {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 3px;
+        height: 16px;
+        border-radius: 3px;
+        opacity: 0;
+        z-index: 2;
+      }
+      .uml-packet-v.packet-down {
+        animation: uml-packet-down 0.8s ease-in-out forwards;
+      }
+      .uml-packet-v.pkt-orange { background: linear-gradient(180deg, transparent, var(--orange), var(--orange), transparent); }
+
+      @keyframes uml-packet-down {
+        0%   { top: -16px; opacity: 0; }
+        15%  { opacity: 1; }
+        85%  { opacity: 1; }
+        100% { top: calc(100% + 5px); opacity: 0; }
+      }
+
+      /* Connector line glow when active */
+      .uml-conn-h.uml-conn-active::before {
+        transition: all 0.4s;
+        height: 2px;
+        box-shadow: 0 0 6px currentColor;
+      }
+      .uml-conn-v.uml-conn-active::before {
+        transition: all 0.4s;
+        width: 2px;
+        box-shadow: 0 0 6px currentColor;
+      }
+      .uml-conn-h.uml-conn-active.conn-accent::before  { background: var(--accent); color: var(--accent); }
+      .uml-conn-h.uml-conn-active.conn-green::before   { background: var(--green); color: var(--green); }
+      .uml-conn-h.uml-conn-active.conn-orange::before  { background: var(--orange); color: var(--orange); }
+      .uml-conn-h.uml-conn-active.conn-cyan::before    { background: var(--cyan); color: var(--cyan); }
+      .uml-conn-v.uml-conn-active.conn-orange::before  { background: var(--orange); color: var(--orange); }
+
+      /* UML status indicator */
+      .uml-status {
+        margin-top: 10px;
+        padding: 0.5rem 1rem;
+        background: rgba(0,0,0,0.25);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.65rem;
+        color: var(--text-dim);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-height: 32px;
+        transition: color 0.3s;
+      }
+      .uml-status .status-dot {
+        width: 6px; height: 6px;
+        border-radius: 50%;
+        background: var(--green);
+        animation: pulse-dot 1.5s ease-in-out infinite;
+        flex-shrink: 0;
+      }
+
+      /* Animated flow card steps */
+      .flow-step {
+        transition: all 0.4s ease;
+      }
+      .flow-step.flow-step-active {
+        background: rgba(255,255,255,0.03);
+        border-radius: var(--radius-sm);
+        padding-left: 8px;
+      }
+      .flow-step.flow-step-active .flow-num {
+        transform: scale(1.15);
+        transition: transform 0.3s;
+      }
+      .flow-step.flow-step-done .flow-num {
+        opacity: 0.4;
+      }
+      .flow-step.flow-step-done .flow-step-text {
+        opacity: 0.4;
+      }
+      .flow-step.flow-step-active .flow-num-search {
+        box-shadow: 0 0 10px rgba(123,97,255,0.4);
+      }
+      .flow-step.flow-step-active .flow-num-match {
+        box-shadow: 0 0 10px rgba(255,138,61,0.4);
+      }
+
+      /* --- Query Flow Diagrams --- */
+      .flow-cards {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+        margin-top: 2rem;
+      }
+      .flow-card {
+        background: var(--glass);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+      }
+      .flow-card-header {
+        padding: 0.75rem 1.2rem;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255,255,255,0.02);
+        font-family: "JetBrains Mono", monospace;
+      }
+      .flow-card-header .flow-method {
+        font-size: 0.65rem;
+        font-weight: 700;
+        padding: 2px 8px;
+        border-radius: 3px;
+      }
+      .flow-card-header .flow-path {
+        font-size: 0.75rem;
+        color: var(--text);
+      }
+      .flow-card-header .flow-desc {
+        margin-left: auto;
+        font-size: 0.6rem;
+        color: var(--text-dim);
+      }
+
+      .flow-steps {
+        padding: 1.2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+      }
+      .flow-step {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 0.6rem 0;
+        position: relative;
+      }
+      .flow-step:not(:last-child)::after {
+        content: "";
+        position: absolute;
+        left: 11px;
+        top: 32px;
+        bottom: -2px;
+        width: 1.5px;
+        background: var(--border);
+      }
+      .flow-num {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.6rem;
+        font-weight: 700;
+        flex-shrink: 0;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .flow-num-search {
+        background: rgba(123,97,255,0.15);
+        border: 1px solid rgba(123,97,255,0.3);
+        color: var(--accent);
+      }
+      .flow-num-match {
+        background: rgba(255,138,61,0.12);
+        border: 1px solid rgba(255,138,61,0.3);
+        color: var(--orange);
+      }
+      .flow-step-text {
+        font-size: 0.75rem;
+        line-height: 1.5;
+        color: var(--text-dim);
+        padding-top: 2px;
+      }
+      .flow-step-text strong {
+        color: var(--text);
+        font-weight: 600;
+      }
+      .flow-step-text code {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.68rem;
+        background: rgba(255,255,255,0.05);
+        padding: 1px 5px;
+        border-radius: 3px;
+        color: var(--cyan);
+      }
+
+      @media (max-width: 768px) {
+        .uml-body { padding: 1.5rem 1rem; }
+        .uml-grid { min-width: 500px; }
+        .uml-node { min-width: 100px; padding: 0.6rem 0.8rem; }
+        .uml-node-label { font-size: 0.68rem; }
+        .uml-legend { display: none; }
+        .flow-cards { grid-template-columns: 1fr; }
+      }
+
+      /* ============================================================
+         PIPELINE ANIMATION
+         ============================================================ */
+      .pipeline-wrap {
+        margin-bottom: 3rem;
+      }
+      .pipeline-label {
+        font-size: 0.7rem;
+        font-family: "JetBrains Mono", monospace;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--text-dim);
+        margin-bottom: 1.2rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .pipeline-label .live-dot {
+        width: 6px; height: 6px;
+        background: var(--green);
+        border-radius: 50%;
+        animation: pulse-dot 2s ease-in-out infinite;
+      }
+
+      .pipeline {
+        display: flex;
+        align-items: stretch;
+        gap: 0;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        background: var(--glass);
+      }
+
+      .pipe-stage {
+        flex: 1;
+        padding: 1.5rem 1.2rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 10px;
+        position: relative;
+        border-right: 1px solid var(--border);
+        transition: background 0.4s;
+        min-height: 140px;
+        justify-content: center;
+      }
+      .pipe-stage:last-child { border-right: none; }
+      .pipe-stage.pipe-active {
+        background: rgba(255, 138, 61, 0.06);
+      }
+
+      .pipe-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+        flex-shrink: 0;
+        position: relative;
+      }
+      .pipe-icon.pi-discover { background: rgba(123,97,255,0.15); border: 1px solid rgba(123,97,255,0.3); }
+      .pipe-icon.pi-download { background: rgba(255,138,61,0.15); border: 1px solid rgba(255,138,61,0.3); }
+      .pipe-icon.pi-extract  { background: rgba(34,211,238,0.15); border: 1px solid rgba(34,211,238,0.3); }
+      .pipe-icon.pi-vectorize { background: rgba(0,255,148,0.15); border: 1px solid rgba(0,255,148,0.3); }
+      .pipe-icon.pi-store    { background: rgba(255,95,87,0.15); border: 1px solid rgba(255,95,87,0.3); }
+
+      .pipe-icon .pipe-spinner {
+        position: absolute;
+        inset: -3px;
+        border-radius: 12px;
+        border: 2px solid transparent;
+        border-top-color: var(--orange);
+        animation: pipe-spin 1s linear infinite;
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+      .pipe-stage.pipe-active .pipe-spinner { opacity: 1; }
+
+      @keyframes pipe-spin {
+        to { transform: rotate(360deg); }
+      }
+
+      .pipe-name {
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+      }
+      .pipe-desc {
+        font-size: 0.65rem;
+        color: var(--text-dim);
+        line-height: 1.4;
+      }
+
+      /* Arrow connectors */
+      .pipe-arrow {
+        position: absolute;
+        right: -8px;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 2;
+        width: 16px;
+        height: 16px;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-dim);
+        font-size: 0.55rem;
+        transition: all 0.3s;
+      }
+      .pipe-stage.pipe-active .pipe-arrow {
+        border-color: var(--orange);
+        color: var(--orange);
+        box-shadow: 0 0 8px rgba(255,138,61,0.3);
+      }
+
+      /* Data particle flowing across pipeline */
+      .pipeline .particle-track {
+        position: absolute;
+        top: 50%;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        pointer-events: none;
+        overflow: hidden;
+        z-index: 3;
+      }
+      .particle-track .particle {
+        position: absolute;
+        width: 30px;
+        height: 2px;
+        border-radius: 2px;
+        background: linear-gradient(90deg, transparent, var(--orange), var(--orange), transparent);
+        animation: particle-flow 4s linear infinite;
+        opacity: 0.7;
+      }
+      .particle-track .particle:nth-child(2) { animation-delay: -1.3s; background: linear-gradient(90deg, transparent, var(--cyan), var(--cyan), transparent); }
+      .particle-track .particle:nth-child(3) { animation-delay: -2.6s; background: linear-gradient(90deg, transparent, var(--green), var(--green), transparent); }
+
+      @keyframes particle-flow {
+        0%   { left: -30px; opacity: 0; }
+        5%   { opacity: 0.8; }
+        90%  { opacity: 0.8; }
+        100% { left: 100%; opacity: 0; }
+      }
+
+      /* Status log below pipeline */
+      .pipe-log {
+        margin-top: 12px;
+        padding: 0.8rem 1.2rem;
+        background: rgba(0,0,0,0.3);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.68rem;
+        color: var(--green);
+        line-height: 1.6;
+        max-height: 90px;
+        overflow: hidden;
+        position: relative;
+      }
+      .pipe-log::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 30px;
+        background: linear-gradient(transparent, rgba(0,0,0,0.3));
+        pointer-events: none;
+      }
+      .pipe-log .log-line {
+        display: block;
+        opacity: 0;
+        animation: log-fade 0.5s ease forwards;
+      }
+      .pipe-log .log-ts { color: var(--text-dim); }
+      .pipe-log .log-ok { color: var(--green); }
+      .pipe-log .log-info { color: var(--cyan); }
+      .pipe-log .log-warn { color: var(--orange); }
+
+      @keyframes log-fade {
+        to { opacity: 1; }
+      }
+
+      @media (max-width: 768px) {
+        .pipeline {
+          flex-direction: column;
+        }
+        .pipe-stage {
+          border-right: none;
+          border-bottom: 1px solid var(--border);
+          min-height: 100px;
+          flex-direction: row;
+          text-align: left;
+          padding: 1rem;
+        }
+        .pipe-stage:last-child { border-bottom: none; }
+        .pipe-arrow {
+          right: auto;
+          bottom: -8px;
+          top: auto;
+          transform: translateX(-50%) rotate(90deg);
+          left: 50%;
+        }
+        .particle-track { display: none; }
       }
 
       /* --- STATS BAR --- */
       .stats-bar {
         border-top: 1px solid var(--border);
-        padding: 2rem 4rem;
+        padding: 2.5rem 4rem;
         display: flex;
         gap: 4rem;
         background: var(--surface);
+        z-index: 1;
+        position: relative;
       }
 
-      .stat-item h3 {
-        font-size: 2rem;
-        margin-bottom: 0.2rem;
-      }
+      .stat-item { position: relative; }
+      .stat-item h3 { font-size: 2rem; margin-bottom: 0.3rem; letter-spacing: -1px; }
       .stat-item p {
         color: var(--text-dim);
-        font-size: 0.75rem;
-        letter-spacing: 1px;
+        font-size: 0.7rem;
+        letter-spacing: 2px;
         text-transform: uppercase;
+        font-family: "JetBrains Mono", monospace;
       }
       .trend {
         color: var(--green);
-        font-size: 0.8rem;
-        margin-left: 10px;
+        font-size: 0.72rem;
+        margin-left: 8px;
         vertical-align: middle;
+        font-family: "JetBrains Mono", monospace;
       }
 
-      .bg-grid {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-image:
-          linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-        background-size: 50px 50px;
-        pointer-events: none;
-        z-index: -1;
+      /* --- FOOTER --- */
+      .footer {
+        padding: 2rem 4rem;
+        border-top: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: var(--text-dim);
+        font-size: 0.75rem;
+        font-family: "JetBrains Mono", monospace;
+        letter-spacing: 1px;
+        z-index: 1;
+        position: relative;
+      }
+      .footer a { color: var(--accent); text-decoration: none; }
+
+      /* --- SCROLL REVEAL --- */
+      .reveal {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .reveal.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* --- RESPONSIVE --- */
+      @media (max-width: 1024px) {
+        .building-hero { grid-template-columns: 1fr; }
+        .panel-split { grid-template-columns: 1fr; }
+        .panel-col + .panel-col { border-left: none; border-top: 1px solid var(--border); }
+        .endpoint-row { grid-template-columns: 70px 1fr; gap: 6px; }
+        .endpoint-desc { grid-column: 1 / -1; }
       }
 
       @media (max-width: 768px) {
-        h1 {
-          font-size: 3rem;
-        }
-        nav,
-        main,
-        .stats-bar,
-        .projects-section {
-          padding: 1.5rem;
-        }
-        .stats-bar {
-          flex-direction: column;
-          gap: 2rem;
-        }
-        nav {
-          flex-direction: column;
-          gap: 1rem;
-          align-items: flex-start;
-        }
-        .nav-links {
-          margin: 0;
-          display: flex;
-          flex-direction: column;
-          gap: 1rem;
-        }
-        .nav-links a {
-          margin: 0;
-        }
+        nav, .hero, .section, .stats-bar, .footer { padding-left: 1.5rem; padding-right: 1.5rem; }
+        h1 { font-size: 2.5rem; }
+        .building-title { font-size: 2rem; }
+        .stats-bar { flex-direction: column; gap: 2rem; }
+        nav { flex-direction: column; gap: 1rem; align-items: flex-start; }
+        .nav-links { display: flex; flex-wrap: wrap; gap: 0; }
+        .endpoint-row { grid-template-columns: 1fr; gap: 4px; }
+        .endpoint-desc { grid-column: 1; }
+        .footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+        .docs-banner { flex-direction: column; text-align: center; }
+        .tutorial-tabs { gap: 0; }
+        .tutorial-tab { padding: 0.6rem 1rem; font-size: 0.7rem; }
       }
     </style>
   </head>
   <body>
     <div class="bg-grid"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
 
+    <!-- NAV -->
     <nav>
-      <div class="brand"><span></span> YAMUSA.TECH</div>
+      <div class="brand"><div class="brand-dot"></div> mr.yamusa</div>
       <div class="nav-links">
         {{ range .Socials }}
         <a href="{{ .URL }}" target="_blank">{{ .Label }}</a>
         {{ end }}
+        <a href="#building">BUILDING</a>
+        <a href="#tutorial">API DOCS</a>
       </div>
-      <a href="{{ .ResumeLink }}" class="cta-btn" target="_blank"
-        >LINKEDIN PROFILE</a
-      >
+      <a href="{{ .ResumeLink }}" class="cta-btn" target="_blank">LINKEDIN &#8594;</a>
     </nav>
 
-    <main>
-      <div class="status-pill">● SYSTEM OPERATIONAL // {{ .Role }}</div>
+    <!-- HERO -->
+    <section class="hero">
+      <div class="status-pill">SYSTEM OPERATIONAL // {{ .Role }}</div>
 
       <h1>
-        SCALABLE SYSTEMS THAT<br />
-        <span>DRIVE PERFORMANCE</span>
+        SCALABLE SYSTEMS<br />
+        <span class="highlight">THAT PERFORM</span>
       </h1>
 
       <p class="subtext">{{ .Tagline }}</p>
 
       <div class="action-row">
-        <a href="/resume" class="cta-btn">WORK EXPERIENCE -></a>
-        <a href="#projects" class="secondary-btn">VIEW PROTOCOLS</a>
+        <a href="/resume" class="cta-btn">WORK EXPERIENCE &#8594;</a>
+        <a href="#projects" class="secondary-btn">VIEW PROJECTS</a>
+        <a href="#building" class="secondary-btn">CURRENTLY BUILDING</a>
       </div>
-    </main>
+    </section>
 
-    <div id="projects" class="projects-section">
+    <!-- PROJECTS -->
+    <section id="projects" class="section">
       <div class="section-header">
-        <h2>// Active Protocols</h2>
+        <h2><span>//</span> Active Projects</h2>
         <div class="line"></div>
       </div>
 
       <div class="project-grid">
         {{ range .Projects }}
-        <div class="project-card">
+        <div class="project-card reveal">
           <div>
             <h3>{{ .Title }}</h3>
             <p>{{ .Description }}</p>
@@ -356,14 +1656,411 @@
               {{ end }}
             </div>
           </div>
-          <a href="{{ .Link }}" class="project-link" target="_blank"
-            >PROJECT INFO -></a
-          >
+          <a href="{{ .Link }}" class="project-link" target="_blank">
+            VIEW PROJECT
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
         </div>
         {{ end }}
       </div>
-    </div>
+    </section>
 
+    <!-- ============================================================
+         CURRENTLY BUILDING
+         ============================================================ -->
+    <section id="building" class="section building-section">
+      <div class="section-header">
+        <h2><span>&#9889;</span> Currently Building</h2>
+        <div class="line"></div>
+      </div>
+
+      <!-- Hero: Info + Architecture -->
+      <div class="building-hero reveal">
+        <div class="building-info">
+          <div class="building-badge">{{ .Building.Status }}</div>
+          <h2 class="building-title"><span>{{ .Building.Name }}</span></h2>
+          <p class="building-tagline">{{ .Building.Description }}</p>
+          <div class="building-actions">
+            <a href="{{ .Building.ScalarLink }}" class="btn-orange" target="_blank">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+              SCALAR DOCS
+            </a>
+            <a href="{{ .Building.DocsLink }}" class="btn-docs" target="_blank">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
+              SWAGGER DOCS
+            </a>
+            <a href="{{ .Building.RepoLink }}" class="secondary-btn" target="_blank">SOURCE CODE</a>
+          </div>
+        </div>
+
+        <div class="arch-visual">
+          {{ range .Building.Architecture }}
+          <div class="arch-node">
+            <div class="arch-dot"></div>
+            <div>
+              <div class="arch-label">{{ .Label }}</div>
+              <div class="arch-desc">{{ .Description }}</div>
+            </div>
+          </div>
+          {{ end }}
+        </div>
+      </div>
+
+      <!-- Tech Stack -->
+      <div class="tech-row reveal">
+        {{ range .Building.TechStack }}
+        <span class="tech-pill">{{ . }}</span>
+        {{ end }}
+      </div>
+
+      <!-- UML System Flow Diagram -->
+      <div class="uml-wrap reveal">
+        <div class="section-header" style="margin-bottom:1.5rem">
+          <h2><span>&#9618;</span> System Flow Diagram</h2>
+          <div class="line"></div>
+        </div>
+
+        <div class="uml-card">
+          <div class="uml-header">
+            <div class="window-dots"><span></span><span></span><span></span></div>
+            <span class="uml-header-title">Orpheus — Component Diagram</span>
+            <div class="uml-legend">
+              <div class="uml-legend-item"><div class="uml-legend-dot" style="background:var(--accent)"></div> Client</div>
+              <div class="uml-legend-item"><div class="uml-legend-dot" style="background:var(--orange)"></div> API</div>
+              <div class="uml-legend-item"><div class="uml-legend-dot" style="background:var(--cyan)"></div> ML</div>
+              <div class="uml-legend-item"><div class="uml-legend-dot" style="background:var(--green)"></div> Storage</div>
+              <div class="uml-legend-item"><div class="uml-legend-dot" style="background:var(--red)"></div> External</div>
+            </div>
+          </div>
+
+          <div class="uml-body">
+            <div class="uml-grid" id="umlGrid">
+              <!-- Row 1: Client → API → Qdrant -->
+              <div class="uml-node uml-client" data-uml="client">
+                <div class="uml-node-label">&#128100; Client</div>
+                <div class="uml-node-sub">curl / voice app<br>Scalar UI</div>
+              </div>
+
+              <div class="uml-conn uml-conn-h conn-accent" data-uml-conn="client-api">
+                <span class="uml-conn-label label-accent">POST /search<br>POST /match</span>
+                <span class="uml-arrow">&#9654;</span>
+              </div>
+
+              <div class="uml-node uml-api" data-uml="api">
+                <div class="uml-node-label">&#9889; Orpheus API</div>
+                <div class="uml-node-sub">FastAPI — Heroku<br>Routes · Scheduler · Pipeline</div>
+              </div>
+
+              <div class="uml-conn uml-conn-h conn-green" data-uml-conn="api-qdrant">
+                <span class="uml-conn-label label-green">query / upsert</span>
+                <span class="uml-arrow">&#9654;</span>
+              </div>
+
+              <div class="uml-node uml-db" data-uml="qdrant">
+                <div class="uml-node-label">&#128451; Qdrant Cloud</div>
+                <div class="uml-node-sub">orpheus_songs (30d)<br>orpheus_frames (32d)</div>
+              </div>
+
+              <!-- Row 2: vertical connectors -->
+              <div class="uml-empty"></div>
+              <div class="uml-empty"></div>
+              <div class="uml-conn uml-conn-v conn-orange" data-uml-conn="api-extractor" style="height:60px">
+                <span class="uml-conn-label label-orange">mp3 upload</span>
+                <span class="uml-arrow">&#9660;</span>
+              </div>
+              <div class="uml-empty"></div>
+              <div class="uml-empty"></div>
+
+              <!-- Row 3: Spotify → (connector) → Extractor → (connector) → YouTube -->
+              <div class="uml-node uml-ext" data-uml="spotify">
+                <div class="uml-node-label">&#127925; Spotify API</div>
+                <div class="uml-node-sub">Track discovery<br>Metadata + genres</div>
+              </div>
+
+              <div class="uml-conn uml-conn-h conn-orange" data-uml-conn="spotify-extractor">
+                <span class="uml-conn-label label-orange">track IDs</span>
+                <span class="uml-arrow">&#9664;</span>
+              </div>
+
+              <div class="uml-node uml-ml" data-uml="extractor">
+                <div class="uml-node-label">&#129504; HF Extractor</div>
+                <div class="uml-node-sub">VibeNet (ONNX) + librosa<br>16 GB · HuggingFace Space</div>
+              </div>
+
+              <div class="uml-conn uml-conn-h conn-cyan" data-uml-conn="extractor-youtube">
+                <span class="uml-conn-label label-cyan">vectors JSON</span>
+                <span class="uml-arrow">&#9664;</span>
+              </div>
+
+              <div class="uml-node uml-ext" data-uml="youtube">
+                <div class="uml-node-label">&#9654; YouTube</div>
+                <div class="uml-node-sub">yt-dlp + Deno<br>Audio download</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="uml-status" id="umlStatus">
+            <span class="status-dot"></span>
+            <span id="umlStatusText">Waiting to animate...</span>
+          </div>
+        </div>
+
+        <!-- Query Flow Cards -->
+        <div class="flow-cards">
+          <!-- Search Flow -->
+          <div class="flow-card">
+            <div class="flow-card-header">
+              <span class="flow-method method-post">POST</span>
+              <span class="flow-path">/search</span>
+              <span class="flow-desc">Semantic Playlist</span>
+            </div>
+            <div class="flow-steps">
+              <div class="flow-step">
+                <div class="flow-num flow-num-search">1</div>
+                <div class="flow-step-text"><strong>Client sends mood query</strong> — JSON body with <code>energy</code>, <code>valence</code>, <code>danceability</code>, <code>tempo_min</code>, <code>tempo_max</code>, <code>mode</code>, <code>limit</code></div>
+              </div>
+              <div class="flow-step">
+                <div class="flow-num flow-num-search">2</div>
+                <div class="flow-step-text"><strong>API builds 30-dim query vector</strong> — Omitted fields default to <code>0.5</code>. Tempo & mode become Qdrant payload filters</div>
+              </div>
+              <div class="flow-step">
+                <div class="flow-num flow-num-search">3</div>
+                <div class="flow-step-text"><strong>Qdrant cosine similarity search</strong> on <code>orpheus_songs</code> collection — returns top-K nearest neighbors</div>
+              </div>
+              <div class="flow-step">
+                <div class="flow-num flow-num-search">4</div>
+                <div class="flow-step-text"><strong>API enriches results</strong> — Attaches metadata (title, artist, album, genres, cover art) and computes similarity score</div>
+              </div>
+              <div class="flow-step">
+                <div class="flow-num flow-num-search">5</div>
+                <div class="flow-step-text"><strong>Returns playlist JSON</strong> — Ranked array of <code>PlaylistSong</code> objects with mood scores, tempo, key, and streaming links</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Match Snippet Flow -->
+          <div class="flow-card">
+            <div class="flow-card-header">
+              <span class="flow-method method-post">POST</span>
+              <span class="flow-path">/match/snippet</span>
+              <span class="flow-desc">Shazam-style Match</span>
+            </div>
+            <div class="flow-steps">
+              <div class="flow-step">
+                <div class="flow-num flow-num-match">1</div>
+                <div class="flow-step-text"><strong>Client uploads audio file</strong> — <code>multipart/form-data</code> with mp3, wav, m4a, ogg, or flac. Optional <code>?similar_limit=5</code></div>
+              </div>
+              <div class="flow-step">
+                <div class="flow-num flow-num-match">2</div>
+                <div class="flow-step-text"><strong>API forwards to HF Extractor</strong> — Extracts 32-dim frame embeddings from 5s windows with 2.5s hop across the clip</div>
+              </div>
+              <div class="flow-step">
+                <div class="flow-num flow-num-match">3</div>
+                <div class="flow-step-text"><strong>Frame-level Qdrant search</strong> on <code>orpheus_frames</code> — Each frame vector queries for nearest matches, votes aggregated per song</div>
+              </div>
+              <div class="flow-step">
+                <div class="flow-num flow-num-match">4</div>
+                <div class="flow-step-text"><strong>Best match identified</strong> — Song with highest vote count wins. Returns <code>confidence</code> score + <code>heard_at</code> timestamp range</div>
+              </div>
+              <div class="flow-step">
+                <div class="flow-num flow-num-match">5</div>
+                <div class="flow-step-text"><strong>Similar songs returned</strong> — Uses matched song’s 30-dim embedding to find <code>similar_limit</code> related tracks from <code>orpheus_songs</code></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pipeline Animation -->
+      <div class="pipeline-wrap reveal">
+        <div class="pipeline-label">
+          <span class="live-dot"></span>
+          INGESTION PIPELINE — LIVE SIMULATION
+        </div>
+        <div class="pipeline" id="pipeline">
+          <div class="particle-track">
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+          </div>
+
+          <div class="pipe-stage" data-stage="0">
+            <div class="pipe-icon pi-discover">
+              &#127911;
+              <div class="pipe-spinner"></div>
+            </div>
+            <div class="pipe-name">Discover</div>
+            <div class="pipe-desc">Spotify search across genres</div>
+            <div class="pipe-arrow">&#9654;</div>
+          </div>
+
+          <div class="pipe-stage" data-stage="1">
+            <div class="pipe-icon pi-download">
+              &#11015;
+              <div class="pipe-spinner"></div>
+            </div>
+            <div class="pipe-name">Download</div>
+            <div class="pipe-desc">yt-dlp audio extraction</div>
+            <div class="pipe-arrow">&#9654;</div>
+          </div>
+
+          <div class="pipe-stage" data-stage="2">
+            <div class="pipe-icon pi-extract">
+              &#129504;
+              <div class="pipe-spinner"></div>
+            </div>
+            <div class="pipe-name">Extract</div>
+            <div class="pipe-desc">VibeNet + librosa features</div>
+            <div class="pipe-arrow">&#9654;</div>
+          </div>
+
+          <div class="pipe-stage" data-stage="3">
+            <div class="pipe-icon pi-vectorize">
+              &#128200;
+              <div class="pipe-spinner"></div>
+            </div>
+            <div class="pipe-name">Vectorize</div>
+            <div class="pipe-desc">30-dim + 32-dim embeddings</div>
+            <div class="pipe-arrow">&#9654;</div>
+          </div>
+
+          <div class="pipe-stage" data-stage="4">
+            <div class="pipe-icon pi-store">
+              &#128451;
+              <div class="pipe-spinner"></div>
+            </div>
+            <div class="pipe-name">Store</div>
+            <div class="pipe-desc">Upsert to Qdrant Cloud</div>
+          </div>
+        </div>
+
+        <div class="pipe-log" id="pipeLog"></div>
+      </div>
+
+      <!-- API Docs Banner -->
+      <div class="docs-banner reveal">
+        <div class="docs-banner-text">
+          <h3>&#128214; Interactive API Documentation</h3>
+          <p>Explore the full OpenAPI spec with live request testing. The Scalar UI provides an interactive playground — try any endpoint without writing code.</p>
+        </div>
+        <div class="docs-banner-links">
+          <a href="{{ .Building.ScalarLink }}" class="btn-orange" target="_blank">Open Scalar &#8594;</a>
+          <a href="{{ .Building.DocsLink }}" class="btn-docs" target="_blank">Swagger UI &#8594;</a>
+        </div>
+      </div>
+
+      <!-- Endpoints Table -->
+      <div class="endpoints-card reveal">
+        <div class="window-header">
+          <div class="window-dots"><span></span><span></span><span></span></div>
+          <span class="window-title">API Endpoints</span>
+          <span style="margin-left:auto; font-size:0.65rem; color:var(--text-dim); font-family:'JetBrains Mono',monospace;">{{ .Building.LiveLink }}</span>
+        </div>
+        <div>
+          {{ range .Building.Endpoints }}
+          <div class="endpoint-row">
+            <span class="method {{ if eq .Method "GET" }}method-get{{ else }}method-post{{ end }}">{{ .Method }}</span>
+            <span class="endpoint-path">{{ .Path }}</span>
+            <span class="endpoint-desc">{{ .Description }}</span>
+          </div>
+          {{ end }}
+        </div>
+      </div>
+
+      <!-- ============================================================
+           API TUTORIAL — TABBED
+           ============================================================ -->
+      <div id="tutorial" class="section-header reveal">
+        <h2><span>&#8594;</span> Quick Start Tutorial</h2>
+        <div class="line"></div>
+      </div>
+
+      <div class="tutorial-container reveal">
+        <!-- Tabs -->
+        <div class="tutorial-tabs">
+          {{ range $i, $t := .Building.Tutorials }}
+          <button class="tutorial-tab{{ if eq $i 0 }} active{{ end }}" data-tab="tutorial-{{ $i }}">
+            {{ $t.Title }}
+            <span class="tab-lang {{ if eq $t.Language "python" }}lang-python{{ else }}lang-bash{{ end }}">{{ $t.Language }}</span>
+          </button>
+          {{ end }}
+        </div>
+
+        <!-- Panels -->
+        {{ range $i, $t := .Building.Tutorials }}
+        <div class="tutorial-panel{{ if eq $i 0 }} active{{ end }}" id="tutorial-{{ $i }}">
+          <div class="panel-description">
+            <h4>{{ $t.Title }}</h4>
+            <span class="panel-step-badge">STEP {{ $i }}</span>
+          </div>
+
+          <div class="panel-split">
+            <!-- Request -->
+            <div class="panel-col">
+              <div class="panel-col-header req-header">
+                <span>&#9654; REQUEST</span>
+                <button class="copy-btn" onclick="copyCode(this, 'req')">COPY</button>
+              </div>
+              <div class="panel-code req-code">
+                <pre>{{ $t.Code }}</pre>
+              </div>
+            </div>
+
+            <!-- Response -->
+            <div class="panel-col">
+              <div class="panel-col-header res-header">
+                <span>&#9664; RESPONSE</span>
+                <button class="copy-btn" onclick="copyCode(this, 'res')">COPY</button>
+              </div>
+              <div class="panel-code res-code">
+                <pre>{{ $t.Response }}</pre>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel-note">
+            &#128161; {{ $t.Note }}
+          </div>
+        </div>
+        {{ end }}
+      </div>
+
+      <!-- Response Schema -->
+      <div class="section-header reveal">
+        <h2><span>{}</span> Search Response Schema</h2>
+        <div class="line"></div>
+      </div>
+
+      <div class="schema-table-wrap reveal">
+        <div class="endpoints-card">
+          <div class="window-header">
+            <div class="window-dots"><span></span><span></span><span></span></div>
+            <span class="window-title">PlaylistSong Fields</span>
+          </div>
+          <table class="schema-table">
+            <thead>
+              <tr>
+                <th>Field</th>
+                <th>Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              {{ range .Building.ResponseFields }}
+              <tr>
+                <td><span class="field-name">{{ .Field }}</span></td>
+                <td><span class="field-type">{{ .Type }}</span></td>
+                <td class="field-desc">{{ .Description }}</td>
+              </tr>
+              {{ end }}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- STATS -->
     <div class="stats-bar">
       {{ range .Stats }}
       <div class="stat-item">
@@ -372,5 +2069,257 @@
       </div>
       {{ end }}
     </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+      <span>&copy; 2025 mr.yamusa &mdash; ALL SYSTEMS NOMINAL</span>
+      <span>GENERATED {{ .GeneratedAt }}</span>
+    </div>
+
+    <script>
+      // Scroll reveal
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) entry.target.classList.add('visible');
+        });
+      }, { threshold: 0.1 });
+      document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+      // Tutorial tabs
+      document.querySelectorAll('.tutorial-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          // Deactivate all
+          document.querySelectorAll('.tutorial-tab').forEach(t => t.classList.remove('active'));
+          document.querySelectorAll('.tutorial-panel').forEach(p => p.classList.remove('active'));
+          // Activate clicked
+          tab.classList.add('active');
+          document.getElementById(tab.dataset.tab).classList.add('active');
+        });
+      });
+
+      // Copy button
+      function copyCode(btn, type) {
+        const col = btn.closest('.panel-col');
+        const code = col.querySelector('pre').textContent;
+        navigator.clipboard.writeText(code).then(() => {
+          btn.textContent = 'COPIED!';
+          setTimeout(() => { btn.textContent = 'COPY'; }, 2000);
+        });
+      }
+
+      // ── Pipeline Animation ──
+      (function() {
+        const stages = document.querySelectorAll('.pipe-stage');
+        const logEl = document.getElementById('pipeLog');
+        if (!stages.length || !logEl) return;
+
+        const songs = [
+          { title: 'Calm Down', artist: 'Rema', genre: 'Afrobeats' },
+          { title: 'Essence', artist: 'Wizkid', genre: 'Afro-Fusion' },
+          { title: 'Love Nwantiti', artist: 'CKay', genre: 'Afropop' },
+          { title: 'Last Last', artist: 'Burna Boy', genre: 'Afrobeats' },
+          { title: 'Peru', artist: 'Fireboy DML', genre: 'Afropop' },
+          { title: 'Ojuelegba', artist: 'Wizkid', genre: 'Afrobeats' },
+          { title: 'Ye', artist: 'Burna Boy', genre: 'Afro-Fusion' },
+          { title: 'FEM', artist: 'Davido', genre: 'Afropop' },
+        ];
+
+        const logMessages = [
+          (s) => [`<span class="log-ts">[spotify]</span>`, `<span class="log-info">Searching ${s.genre} → found "${s.title}" by ${s.artist}</span>`],
+          (s) => [`<span class="log-ts">[dedup]</span>`,   `<span class="log-ok">New track — not in Qdrant. Proceeding.</span>`],
+          (s) => [`<span class="log-ts">[yt-dlp]</span>`,  `<span class="log-warn">Downloading audio → ${s.title}.mp3 (3.2 MB)</span>`],
+          (s) => [`<span class="log-ts">[extractor]</span>`, `<span class="log-info">POST /extract → VibeNet inference (${(Math.random()*0.4+0.3).toFixed(1)}s)</span>`],
+          (s) => [`<span class="log-ts">[features]</span>`, `<span class="log-ok">30-dim song vector + ${Math.floor(Math.random()*40+20)} frame vectors extracted</span>`],
+          (s) => [`<span class="log-ts">[qdrant]</span>`,  `<span class="log-ok">✓ Upserted to orpheus_songs + orpheus_frames</span>`],
+          (s) => [`<span class="log-ts">[cleanup]</span>`, `<span class="log-info">Temp files deleted. GC complete.</span>`],
+        ];
+
+        let currentStage = -1;
+        let currentSong = 0;
+        let msgIndex = 0;
+
+        function ts() {
+          const d = new Date();
+          return d.toTimeString().slice(0, 8);
+        }
+
+        function addLog(parts) {
+          const line = document.createElement('span');
+          line.className = 'log-line';
+          line.innerHTML = `<span class="log-ts">${ts()}</span> ${parts.join(' ')}`;
+          logEl.appendChild(line);
+          // Keep max 6 lines
+          while (logEl.children.length > 6) logEl.removeChild(logEl.firstChild);
+          logEl.scrollTop = logEl.scrollHeight;
+        }
+
+        function step() {
+          const song = songs[currentSong];
+
+          // Move to next stage
+          currentStage = (currentStage + 1) % stages.length;
+          stages.forEach(s => s.classList.remove('pipe-active'));
+          stages[currentStage].classList.add('pipe-active');
+
+          // Add corresponding log
+          if (msgIndex < logMessages.length) {
+            const parts = logMessages[msgIndex](song);
+            addLog(parts);
+            msgIndex++;
+          }
+
+          // When we complete a full cycle, move to next song
+          if (currentStage === stages.length - 1) {
+            setTimeout(() => {
+              currentStage = -1;
+              msgIndex = 0;
+              currentSong = (currentSong + 1) % songs.length;
+              stages.forEach(s => s.classList.remove('pipe-active'));
+              addLog([`<span class="log-ts">[scheduler]</span>`, `<span class="log-info">Cycle complete. Next song in queue...</span>`]);
+            }, 1800);
+          }
+        }
+
+        // Only start when visible
+        let started = false;
+        const pipeObs = new IntersectionObserver((entries) => {
+          if (entries[0].isIntersecting && !started) {
+            started = true;
+            addLog([`<span class="log-ts">[scheduler]</span>`, `<span class="log-ok">Ingestion cycle started — processing ${songs.length} songs</span>`]);
+            setTimeout(() => {
+              step();
+              setInterval(step, 2000);
+            }, 800);
+          }
+        }, { threshold: 0.3 });
+        pipeObs.observe(document.getElementById('pipeline'));
+      })();
+
+      // ── UML Diagram Animation ──
+      (function() {
+        const grid = document.getElementById('umlGrid');
+        const statusEl = document.getElementById('umlStatusText');
+        if (!grid || !statusEl) return;
+
+        function node(id)  { return grid.querySelector('[data-uml="' + id + '"]'); }
+        function conn(id)  { return grid.querySelector('[data-uml-conn="' + id + '"]'); }
+
+        const allNodes = grid.querySelectorAll('.uml-node');
+        const allConns = grid.querySelectorAll('[data-uml-conn]');
+
+        // Flow card steps
+        const searchSteps = document.querySelectorAll('.flow-card:first-child .flow-step');
+        const matchSteps  = document.querySelectorAll('.flow-card:last-child .flow-step');
+
+        function clearAll() {
+          allNodes.forEach(n => n.classList.remove('uml-anim-active'));
+          allConns.forEach(c => {
+            c.classList.remove('uml-conn-active');
+            c.querySelectorAll('.uml-packet, .uml-packet-v').forEach(p => p.remove());
+          });
+          searchSteps.forEach(s => { s.classList.remove('flow-step-active', 'flow-step-done'); });
+          matchSteps.forEach(s => { s.classList.remove('flow-step-active', 'flow-step-done'); });
+        }
+
+        function activateNode(id) {
+          const n = node(id);
+          if (n) n.classList.add('uml-anim-active');
+        }
+        function deactivateNode(id) {
+          const n = node(id);
+          if (n) n.classList.remove('uml-anim-active');
+        }
+
+        function firePacket(connId, direction, color) {
+          const c = conn(connId);
+          if (!c) return;
+          c.classList.add('uml-conn-active');
+          const pkt = document.createElement('div');
+          const isVert = c.classList.contains('uml-conn-v');
+          if (isVert) {
+            pkt.className = 'uml-packet-v packet-down pkt-' + color;
+          } else {
+            pkt.className = 'uml-packet packet-' + direction + ' pkt-' + color;
+          }
+          c.appendChild(pkt);
+          setTimeout(() => {
+            pkt.remove();
+            c.classList.remove('uml-conn-active');
+          }, 850);
+        }
+
+        function setFlowStep(steps, idx) {
+          steps.forEach((s, i) => {
+            s.classList.remove('flow-step-active', 'flow-step-done');
+            if (i < idx) s.classList.add('flow-step-done');
+            if (i === idx) s.classList.add('flow-step-active');
+          });
+        }
+
+        // --- SEARCH FLOW SEQUENCE ---
+        const searchSequence = [
+          { do: () => { activateNode('client'); setFlowStep(searchSteps, 0); }, status: '▶ /search — Client sends mood query {energy: 0.8, valence: 0.6}', ms: 1800 },
+          { do: () => { firePacket('client-api', 'right', 'accent'); }, status: '→ POST request in transit to Orpheus API...', ms: 1000 },
+          { do: () => { deactivateNode('client'); activateNode('api'); setFlowStep(searchSteps, 1); }, status: '⚡ API building 30-dim query vector from mood params', ms: 1800 },
+          { do: () => { firePacket('api-qdrant', 'right', 'green'); setFlowStep(searchSteps, 2); }, status: '→ Cosine similarity search on orpheus_songs collection', ms: 1000 },
+          { do: () => { activateNode('qdrant'); }, status: '🗄 Qdrant scanning 142 song vectors... top-K matches found', ms: 1800 },
+          { do: () => { firePacket('api-qdrant', 'left', 'green'); }, status: '← Returning nearest neighbor results', ms: 1000 },
+          { do: () => { deactivateNode('qdrant'); activateNode('api'); setFlowStep(searchSteps, 3); }, status: '⚡ Enriching results with metadata, cover art, streaming links', ms: 1800 },
+          { do: () => { firePacket('client-api', 'left', 'accent'); setFlowStep(searchSteps, 4); }, status: '← Playlist JSON returned to client (5 songs, scored)', ms: 1000 },
+          { do: () => { deactivateNode('api'); activateNode('client'); }, status: '✓ Search complete — playlist delivered', ms: 2000 },
+          { do: () => { clearAll(); }, status: 'Idle — preparing match/snippet demo...', ms: 1500 },
+        ];
+
+        // --- MATCH SNIPPET FLOW SEQUENCE ---
+        const matchSequence = [
+          { do: () => { activateNode('client'); setFlowStep(matchSteps, 0); }, status: '▶ /match/snippet — Client uploads audio clip (recording.mp3)', ms: 1800 },
+          { do: () => { firePacket('client-api', 'right', 'accent'); }, status: '→ multipart/form-data upload in transit...', ms: 1000 },
+          { do: () => { deactivateNode('client'); activateNode('api'); setFlowStep(matchSteps, 1); }, status: '⚡ API forwarding audio to HuggingFace Extractor', ms: 1500 },
+          { do: () => { firePacket('api-extractor', 'down', 'orange'); }, status: '↓ MP3 uploaded to extraction service', ms: 1000 },
+          { do: () => { activateNode('extractor'); }, status: '🧠 VibeNet + librosa extracting 32-dim frame embeddings (5s windows)', ms: 2200 },
+          { do: () => { firePacket('api-extractor', 'down', 'cyan'); deactivateNode('extractor'); }, status: '↑ Frame vectors returned to API', ms: 1000 },
+          { do: () => { activateNode('api'); setFlowStep(matchSteps, 2); }, status: '⚡ Querying orpheus_frames — frame-level cosine search', ms: 1500 },
+          { do: () => { firePacket('api-qdrant', 'right', 'green'); }, status: '→ Searching frame vectors in Qdrant...', ms: 1000 },
+          { do: () => { activateNode('qdrant'); setFlowStep(matchSteps, 3); }, status: '🗄 Vote aggregation — "Calm Down" by Rema wins (confidence: 0.94)', ms: 2000 },
+          { do: () => { firePacket('api-qdrant', 'left', 'green'); deactivateNode('qdrant'); }, status: '← Match result + similar song query', ms: 1000 },
+          { do: () => { activateNode('api'); setFlowStep(matchSteps, 4); }, status: '⚡ Finding 5 similar songs using matched song embedding', ms: 1800 },
+          { do: () => { firePacket('client-api', 'left', 'accent'); }, status: '← Returning match + similar_songs to client', ms: 1000 },
+          { do: () => { deactivateNode('api'); activateNode('client'); }, status: '✓ Match complete — "Calm Down" identified at 45.0s–50.0s', ms: 2000 },
+          { do: () => { clearAll(); }, status: 'Cycle complete — restarting search demo...', ms: 2000 },
+        ];
+
+        function runSequence(seq, onDone) {
+          let i = 0;
+          function next() {
+            if (i >= seq.length) { onDone(); return; }
+            const step = seq[i];
+            step.do();
+            statusEl.textContent = step.status;
+            i++;
+            setTimeout(next, step.ms);
+          }
+          next();
+        }
+
+        function loop() {
+          runSequence(searchSequence, () => {
+            runSequence(matchSequence, () => {
+              loop();
+            });
+          });
+        }
+
+        // Start when visible
+        let umlStarted = false;
+        const umlObs = new IntersectionObserver((entries) => {
+          if (entries[0].isIntersecting && !umlStarted) {
+            umlStarted = true;
+            statusEl.textContent = 'System online — starting search flow demo...';
+            setTimeout(loop, 1200);
+          }
+        }, { threshold: 0.2 });
+        umlObs.observe(grid);
+      })();
+    </script>
   </body>
 </html>

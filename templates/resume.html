@@ -3,19 +3,28 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AGENT DOSSIER // YAMUSA</title>
+    <title>Resume — mr.yamusa</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
-      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;700&family=JetBrains+Mono:wght@400;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap"
       rel="stylesheet"
     />
     <style>
       :root {
-        --bg: #050505;
-        --text: #e0e0e0;
+        --bg: #03040b;
+        --surface: #0a0c1a;
+        --text: #f0f0f0;
+        --text-dim: #6b7394;
         --accent: #7b61ff;
-        --dim: #444;
-        --border: #333;
+        --accent-soft: rgba(123, 97, 255, 0.15);
+        --accent-glow: rgba(123, 97, 255, 0.4);
         --green: #00ff94;
+        --green-soft: rgba(0, 255, 148, 0.08);
+        --border: rgba(255, 255, 255, 0.06);
+        --border-accent: rgba(123, 97, 255, 0.2);
+        --glass: rgba(255, 255, 255, 0.03);
+        --radius: 12px;
+        --radius-sm: 6px;
       }
 
       * {
@@ -29,286 +38,418 @@
         color: var(--text);
         font-family: "Space Grotesk", sans-serif;
         line-height: 1.6;
-        padding: 40px;
-        max-width: 1000px;
-        margin: 0 auto;
-        border-left: 1px dashed var(--dim);
-        border-right: 1px dashed var(--dim);
         min-height: 100vh;
+        overflow-x: hidden;
       }
 
-      /* HEADER */
+      /* --- NOISE OVERLAY --- */
+      body::before {
+        content: "";
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+        pointer-events: none;
+        z-index: 9999;
+        opacity: 0.4;
+      }
+
+      /* --- BACKGROUND GRID --- */
+      .bg-grid {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image:
+          linear-gradient(rgba(255, 255, 255, 0.018) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px);
+        background-size: 60px 60px;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      /* --- SCANLINE --- */
+      .scanline {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: linear-gradient(90deg, transparent, var(--green), transparent);
+        opacity: 0.4;
+        animation: scan 8s linear infinite;
+        pointer-events: none;
+        z-index: 999;
+      }
+      @keyframes scan {
+        0% { top: -5%; }
+        100% { top: 105%; }
+      }
+
+      .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 0 40px;
+        position: relative;
+        z-index: 1;
+      }
+
+      /* --- BACK BUTTON --- */
+      .back-btn {
+        position: fixed;
+        top: 20px;
+        right: 24px;
+        z-index: 200;
+        background: rgba(3, 4, 11, 0.8);
+        backdrop-filter: blur(20px);
+        border: 1px solid var(--border-accent);
+        color: var(--accent);
+        padding: 10px 20px;
+        text-decoration: none;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 600;
+        font-size: 0.8rem;
+        letter-spacing: 1px;
+        border-radius: var(--radius-sm);
+        transition: all 0.3s;
+      }
+      .back-btn:hover {
+        background: var(--accent);
+        color: white;
+        box-shadow: 0 0 20px var(--accent-glow);
+      }
+
+      /* --- HEADER --- */
       header {
-        border-bottom: 2px solid var(--accent);
-        padding-bottom: 20px;
-        margin-bottom: 40px;
+        padding: 60px 0 40px;
+        border-bottom: 1px solid var(--border);
+        margin-bottom: 50px;
         display: flex;
         justify-content: space-between;
         align-items: flex-end;
       }
 
-      h1 {
-        font-family: "JetBrains Mono", monospace;
-        font-size: 3rem;
+      header h1 {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: clamp(2.2rem, 5vw, 3.2rem);
         text-transform: uppercase;
         letter-spacing: -2px;
+        font-weight: 700;
+        line-height: 1;
+        margin-bottom: 8px;
       }
       .role {
-        color: var(--accent);
-        font-weight: bold;
-        letter-spacing: 2px;
+        font-family: "JetBrains Mono", monospace;
+        background: linear-gradient(135deg, var(--accent), #22d3ee);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-weight: 700;
+        font-size: 0.85rem;
+        letter-spacing: 3px;
       }
 
       .meta-data {
         text-align: right;
         font-family: "JetBrains Mono", monospace;
-        font-size: 0.8rem;
-        color: var(--dim);
+        font-size: 0.72rem;
+        color: var(--text-dim);
+        letter-spacing: 1px;
       }
       .meta-data span {
         display: block;
+        margin-bottom: 2px;
+      }
+      .meta-status {
+        color: var(--green) !important;
       }
 
-      /* GRID LAYOUT */
+      /* --- GRID LAYOUT --- */
       .grid {
         display: grid;
         grid-template-columns: 1fr 2fr;
-        gap: 40px;
+        gap: 50px;
       }
 
-      /* SECTIONS */
+      /* --- SECTIONS --- */
       section {
         margin-bottom: 40px;
       }
       h2 {
         font-family: "JetBrains Mono", monospace;
-        font-size: 1.2rem;
-        color: var(--green);
-        border-bottom: 1px solid var(--dim);
-        padding-bottom: 5px;
+        font-size: 0.85rem;
+        color: var(--text-dim);
+        padding-bottom: 10px;
         margin-bottom: 20px;
         text-transform: uppercase;
         display: flex;
         align-items: center;
         gap: 10px;
+        letter-spacing: 2px;
+        border-bottom: 1px solid var(--border);
       }
       h2::before {
         content: ">";
         color: var(--accent);
+        font-weight: 700;
       }
 
-      /* CONTACT INFO */
+      /* --- CONTACT BOX --- */
       .contact-box {
-        background: rgba(255, 255, 255, 0.03);
+        background: var(--glass);
         padding: 20px;
-        border: 1px solid var(--dim);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
         font-family: "JetBrains Mono", monospace;
-        font-size: 0.9rem;
+        font-size: 0.82rem;
       }
       .contact-item {
         margin-bottom: 10px;
         display: flex;
         gap: 10px;
+        align-items: center;
+      }
+      .contact-item:last-child {
+        margin-bottom: 0;
       }
       .contact-label {
-        color: var(--dim);
-        width: 60px;
+        color: var(--text-dim);
+        width: 55px;
+        flex-shrink: 0;
+        font-size: 0.7rem;
+        letter-spacing: 1px;
+      }
+      .contact-link {
+        color: var(--accent);
+        text-decoration: none;
+        font-size: 0.78rem;
+        padding: 3px 10px;
+        border: 1px solid var(--border-accent);
+        border-radius: var(--radius-sm);
+        transition: all 0.3s;
+        margin-right: 6px;
+      }
+      .contact-link:hover {
+        background: var(--accent-soft);
+        color: white;
       }
 
-      /* SKILLS */
+      /* --- SKILLS --- */
       .skill-tag {
         display: inline-block;
-        background: rgba(123, 97, 255, 0.1);
+        background: var(--accent-soft);
         color: var(--accent);
-        padding: 5px 10px;
-        border-radius: 2px;
-        font-size: 0.8rem;
-        margin: 0 5px 5px 0;
-        border: 1px solid rgba(123, 97, 255, 0.3);
+        padding: 5px 12px;
+        border-radius: 50px;
+        font-size: 0.72rem;
+        margin: 0 5px 8px 0;
+        border: 1px solid var(--border-accent);
+        font-family: "JetBrains Mono", monospace;
+        letter-spacing: 0.5px;
+        transition: all 0.3s;
+      }
+      .skill-tag:hover {
+        background: var(--accent);
+        color: white;
       }
 
-      /* EXPERIENCE ITEMS */
+      /* --- EXPERIENCE --- */
       .job {
         margin-bottom: 30px;
         position: relative;
         padding-left: 20px;
-        border-left: 2px solid var(--dim);
+        border-left: 2px solid var(--border);
+        transition: border-color 0.3s;
       }
       .job:hover {
         border-left-color: var(--accent);
       }
 
       .job-title {
-        font-weight: bold;
-        font-size: 1.1rem;
+        font-weight: 600;
+        font-size: 1.05rem;
         color: white;
+        letter-spacing: -0.3px;
       }
       .company {
         color: var(--accent);
         font-family: "JetBrains Mono", monospace;
-        font-size: 0.9rem;
+        font-size: 0.82rem;
+        letter-spacing: 0.5px;
       }
       .date {
-        color: var(--dim);
-        font-size: 0.8rem;
+        color: var(--text-dim);
+        font-size: 0.72rem;
         margin-bottom: 10px;
-        display: block;
+        display: inline-block;
+        font-family: "JetBrains Mono", monospace;
+        letter-spacing: 1px;
+        background: var(--glass);
+        padding: 2px 10px;
+        border-radius: 50px;
+        border: 1px solid var(--border);
+        margin-top: 4px;
       }
       .job ul {
         list-style: none;
         padding: 0;
+        margin-top: 8px;
       }
       .job li {
-        margin-bottom: 5px;
-        color: #ccc;
-        font-size: 0.95rem;
+        margin-bottom: 6px;
+        color: var(--text-dim);
+        font-size: 0.9rem;
+        line-height: 1.6;
+        padding-left: 16px;
+        position: relative;
       }
       .job li::before {
-        content: "- ";
-        color: var(--dim);
-      }
-
-      /* SCANLINE ANIMATION */
-      .scanline {
-        position: fixed;
-        top: 0;
+        content: "";
+        position: absolute;
         left: 0;
-        width: 100%;
-        height: 5px;
-        background: rgba(0, 255, 148, 0.5);
-        opacity: 0.6;
-        animation: scan 6s linear infinite;
-        pointer-events: none;
-        z-index: 999;
-      }
-      @keyframes scan {
-        0% {
-          top: -10%;
-        }
-        100% {
-          top: 110%;
-        }
-      }
-
-      .back-btn {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: var(--bg);
-        border: 1px solid var(--accent);
-        color: var(--accent);
-        padding: 10px 20px;
-        text-decoration: none;
-        font-family: "JetBrains Mono", monospace;
-        font-weight: bold;
-        transition: 0.3s;
-      }
-      .back-btn:hover {
+        top: 10px;
+        width: 6px;
+        height: 1px;
         background: var(--accent);
-        color: white;
       }
 
+      /* --- PROFILE --- */
+      .profile-text {
+        color: var(--text-dim);
+        font-size: 0.95rem;
+        line-height: 1.8;
+      }
+
+      /* --- EDUCATION --- */
+      .edu-card {
+        background: var(--glass);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 16px 20px;
+      }
+
+      /* --- FOOTER --- */
+      .resume-footer {
+        padding: 30px 0;
+        margin-top: 30px;
+        border-top: 1px solid var(--border);
+        text-align: center;
+        color: var(--text-dim);
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.7rem;
+        letter-spacing: 2px;
+      }
+
+      /* --- RESPONSIVE --- */
       @media (max-width: 768px) {
         .grid {
           grid-template-columns: 1fr;
         }
-        body {
-          padding: 20px;
+        .container {
+          padding: 0 20px;
         }
-        h1 {
-          font-size: 2rem;
+        header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 16px;
+        }
+        header h1 { font-size: 2rem; }
+        .meta-data {
+          text-align: left;
         }
       }
     </style>
   </head>
   <body>
+    <div class="bg-grid"></div>
     <div class="scanline"></div>
-    <a href="/" class="back-btn">X CLOSE DOSSIER</a>
+    <a href="/" class="back-btn">&larr; BACK</a>
 
-    <header>
-      <div>
-        <h1>David Yamusa Idris</h1>
-        <div class="role">BACKEND & AI ENGINEER</div>
+    <div class="container">
+      <header>
+        <div>
+          <h1>David Yamusa Idris</h1>
+          <div class="role">BACKEND &amp; AI ENGINEER</div>
+        </div>
+        <div class="meta-data">
+          <span>ID: YAMUSA-007</span>
+          <span>LOC: ABUJA, NG</span>
+          <span class="meta-status">STATUS: ACTIVE</span>
+        </div>
+      </header>
+
+      <div class="grid">
+        <aside>
+          <section>
+            <h2>CONTACT</h2>
+            <div class="contact-box">
+              <div class="contact-item">
+                <span class="contact-label">TEL</span> +234 807 700 9987
+              </div>
+              <div class="contact-item">
+                <span class="contact-label">MAIL</span> icsidavid@gmail.com
+              </div>
+              <div class="contact-item">
+                <span class="contact-label">LOC</span> Abuja, Nigeria
+              </div>
+              <div class="contact-item" style="margin-top: 12px; gap: 6px;">
+                <a href="https://www.linkedin.com/in/david-idris-174222289/" class="contact-link" target="_blank">LINKEDIN</a>
+                <a href="https://github.com/mrYamusa" class="contact-link" target="_blank">GITHUB</a>
+              </div>
+            </div>
+          </section>
+
+          <section>
+            <h2>CORE SKILLS</h2>
+            {{ range .Skills }}
+            <span class="skill-tag">{{ . }}</span>
+            {{ end }}
+          </section>
+
+          <section>
+            <h2>EDUCATION</h2>
+            <div class="edu-card">
+              <div class="job-title">Landmark University</div>
+              <div class="company">B.Sc Computer Science</div>
+              <div class="date">2021 &mdash; 2025</div>
+            </div>
+          </section>
+        </aside>
+
+        <main>
+          <section>
+            <h2>PROFILE</h2>
+            <p class="profile-text">
+              Python Developer specializing in backend development and AI/ML
+              integration. Experienced in developing applications using FastAPI
+              and cloud-native technologies. Committed to writing clean,
+              maintainable code and deploying secure, scalable architectures.
+            </p>
+          </section>
+
+          <section>
+            <h2>EXPERIENCE LOG</h2>
+
+            {{ range .Experience }}
+            <div class="job">
+              <div class="job-title">{{ .Title }}</div>
+              <div class="company">{{ .Company }}</div>
+              <div class="date">{{ .Duration }}</div>
+              <ul>
+                {{ range .Points }}
+                <li>{{ . }}</li>
+                {{ end }}
+              </ul>
+            </div>
+            {{ end }}
+          </section>
+        </main>
       </div>
-      <div class="meta-data">
-        <span>ID: YAMUSA-007</span>
-        <span>LOC: ABUJA, NG</span>
-        <span>STATUS: ACTIVE</span>
+
+      <div class="resume-footer">
+        DOSSIER GENERATED // mr.yamusa
       </div>
-    </header>
-
-    <div class="grid">
-      <aside>
-        <section>
-          <h2>CONTACT_LINK</h2>
-          <div class="contact-box">
-            <div class="contact-item">
-              <span class="contact-label">TEL:</span> +234 807 700 9987
-            </div>
-            <div class="contact-item">
-              <span class="contact-label">MAIL:</span> icsidavid@gmail.com
-            </div>
-            <div class="contact-item">
-              <span class="contact-label">LOC:</span> Abuja, Nigeria
-            </div>
-            <div class="contact-item" style="margin-top: 10px">
-              <a
-                href="https://www.linkedin.com/in/david-idris-174222289/"
-                style="color: var(--accent)"
-                >[LINKEDIN]</a
-              >
-              <a href="https://github.com/mrYamusa" style="color: var(--accent)"
-                >[GITHUB]</a
-              >
-            </div>
-          </div>
-        </section>
-
-        <section>
-          <h2>CORE_SKILLS</h2>
-          {{ range .Skills }}
-          <span class="skill-tag">{{ . }}</span>
-          {{ end }}
-        </section>
-
-        <section>
-          <h2>EDUCATION</h2>
-          <div class="job" style="border: none; padding: 0">
-            <div class="job-title">Landmark University</div>
-            <div class="company">B.Sc Computer Science</div>
-            <div class="date">2021 - 2025</div>
-          </div>
-        </section>
-      </aside>
-
-      <main>
-        <section>
-          <h2>PROFILE</h2>
-          <p>
-            Python Developer specializing in backend development and AI/ML
-            integration. Experienced in developing applications using FastAPI
-            and cloud-native technologies. Committed to writing clean,
-            maintainable code and deploying secure, scalable architectures.
-          </p>
-        </section>
-
-        <section>
-          <h2>EXPERIENCE_LOG</h2>
-
-          {{ range .Experience }}
-          <div class="job">
-            <div class="job-title">{{ .Title }}</div>
-            <div class="company">{{ .Company }}</div>
-            <div class="date">{{ .Duration }}</div>
-            <ul>
-              {{ range .Points }}
-              <li>{{ . }}</li>
-              {{ end }}
-            </ul>
-          </div>
-          {{ end }}
-        </section>
-      </main>
     </div>
   </body>
 </html>
